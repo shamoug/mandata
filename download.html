@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Mandata</title>
+<meta name="description" content="Download the Mandata installer for Windows: a 0.5 MB zip of scripts that installs for your user account with no admin rights.">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="mast">
+  <nav class="wrap" aria-label="Main">
+    <a class="logo" href="./"><img src="assets/icon.png" alt="">Mandata</a>
+    <a href="./#features">Features</a>
+    <a href="./#privacy">Privacy</a>
+    <a href="about.html">About</a>
+    <a class="navcta" href="download.html" aria-current="page">Download</a>
+  </nav>
+</header>
+
+<section class="hero" style="padding-bottom:56px">
+  <div class="wrap hero-copy" style="max-width:820px;margin-inline:0 auto">
+    <span class="eyebrow">Download</span>
+    <h1>Mandata for Windows</h1>
+    <p class="lede">A zip of install scripts, not a setup program. Nothing to sign, nothing that needs an administrator. It runs on a standard work laptop with Windows 10 or 11 and classic Outlook.</p>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0;margin-top:-28px">
+  <div class="wrap stack" style="gap:56px">
+    <div class="dl-card">
+      <img src="assets/icon.png" alt="">
+      <div>
+        <h2 style="font-size:1.5rem">Mandata-Installer-<span id="ver">2.0.0</span>.zip</h2>
+        <div class="dl-meta"><span>Version 2.0.0</span><span>About 0.5 MB</span><span>Windows 10 / 11, x64 or ARM64</span><span>Per-user install</span></div>
+      </div>
+      <a class="btn btn-primary" id="dl" href="downloads/Mandata-Installer.zip" download>Download zip</a>
+    </div>
+
+    <div class="two">
+      <div class="stack" style="gap:20px">
+        <span class="eyebrow">Install</span>
+        <h2>Four steps</h2>
+        <ol class="steps">
+          <li><h3>Unblock the zip</h3><p>Right-click the downloaded zip, choose <b>Properties</b>, tick <b>Unblock</b>, then OK. This stops Windows asking again for each script.</p></li>
+          <li><h3>Extract it</h3><p>Right-click, <b>Extract All</b>. Open the <code>Mandata-Installer</code> folder it makes.</p></li>
+          <li><h3>Double-click <code>install.bat</code></h3><p>It checks the laptop, downloads the app runtime from GitHub (checked against its published SHA-256), copies the app to <code>%LOCALAPPDATA%\Programs\Mandata</code> and adds Start Menu and Desktop shortcuts.</p></li>
+          <li><h3>Say yes to the local AI</h3><p>It offers to install Ollama and the model that best fits your laptop's memory and graphics card, a 3 to 20 GB download. Then Mandata starts and reads the last 30 days of mail.</p></li>
+        </ol>
+        <p class="note"><b>Updating:</b> download the new zip and run <code>install.bat</code> again. Your data in <code>%USERPROFILE%\.mandata</code> is never touched by an update.</p>
+      </div>
+
+      <div class="stack" style="gap:20px">
+        <span class="eyebrow">Requirements</span>
+        <h2>What the laptop needs</h2>
+        <div class="tablebox">
+          <table class="req">
+            <tr><th>Windows</th><td>Windows 10 or 11, 64-bit (x64 or ARM64)</td></tr>
+            <tr><th>Outlook</th><td>Classic Outlook, signed in. The new Outlook does not offer the connection Mandata reads mail through.</td></tr>
+            <tr><th>Rights</th><td>None beyond a normal user account. PowerShell scripts must be allowed to run.</td></tr>
+            <tr><th>Disk</th><td>About 0.8 GB for the app, plus the AI model's size and 2 GB (about 5 GB for <code>phi4-mini</code>).</td></tr>
+            <tr><th>Memory</th><td>8 GB works; 16 GB or a separate graphics card reads mail much faster.</td></tr>
+            <tr><th>Internet</th><td>Only during install, to reach GitHub and Ollama. Reading mail is offline.</td></tr>
+          </table>
+        </div>
+        <p class="fine" style="color:var(--muted)">Prefer the command line? Options go after <code>install.bat</code>: <code>-AI no</code> skips the AI, <code>-Model qwen3:8b</code> picks a model, <code>-NoDesktopIcon</code>, <code>-NoLaunch</code>.</p>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="stack" style="gap:20px">
+        <span class="eyebrow">If something goes wrong</span>
+        <h2>Troubleshooting</h2>
+      </div>
+      <div>
+        <details><summary>The scripts don't run, or "ConstrainedLanguage mode"</summary><p>An IT policy blocks PowerShell scripts on this laptop. Ask your IT service desk to allow them, or to run the installer for you.</p></details>
+        <details><summary>Mandata.exe is blocked from starting</summary><p>Some policies (AppLocker) allow programs only from Program Files. Ask IT to allow <code>%LOCALAPPDATA%\Programs\Mandata\Mandata.exe</code>. A code-signing certificate would not change this.</p></details>
+        <details><summary>A download fails</summary><p>Check the internet connection or VPN. The installer uses the Windows proxy settings and signs in to the proxy as you. Run <code>install.bat</code> again and it continues where it stopped.</p></details>
+        <details><summary>"Could not replace ..."</summary><p>Quit Mandata from its tray icon (right-click, Quit) and run <code>install.bat</code> again.</p></details>
+        <details><summary>Windows says "Windows protected your PC"</summary><p>The zip was not unblocked before extracting. Click <b>More info</b>, then <b>Run anyway</b>, or delete the folder, unblock the zip (step 1) and extract it again.</p></details>
+        <details><summary>How do I uninstall?</summary><p>Settings, Apps, Mandata, Uninstall, or double-click <code>uninstall.bat</code>. It asks before removing your data or the AI model; both are kept by default.</p></details>
+        <details><summary>Can I pin it to the taskbar?</summary><p>Windows lets no installer do that. While Mandata runs, right-click its taskbar icon and choose <b>Pin to taskbar</b>.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Mandata 2.0 · An innovation sandbox project</span>
+    <span><a href="about.html">About</a> · <a href="./">Home</a> · <a href="https://github.com/shamoug/mandata">GitHub</a></span>
+  </div>
+</footer>
+</body>
+</html>
