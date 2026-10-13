@@ -9,7 +9,7 @@ to the email that closes it, and keeps a profile for everyone you work with. Ema
 ## Install
 
 1. Download the zip. Right-click it, **Properties**, tick **Unblock**, OK.
-2. Extract it and open the `Mandata-Installer` folder.
+2. Extract it and open the folder it makes.
 3. Double-click `install.bat`.
 
 It installs for the current user in `%LOCALAPPDATA%\Programs\Mandata`, with no admin rights and no setup program.
