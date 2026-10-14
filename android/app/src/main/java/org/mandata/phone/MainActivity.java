@@ -19,6 +19,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -62,6 +63,15 @@ public class MainActivity extends Activity {
                 if (scheme.equals("mandata")) { open(u); return true; }
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (ActivityNotFoundException e) { /* nothing can open it */ }
                 return true;
+            }
+
+            // The phone version's files come from the app's copy when the computer does not answer (Shell.java),
+            // so it opens offline; its data is kept by the page itself.
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest req) {
+                Uri u = req.getUrl();
+                if (!"GET".equals(req.getMethod()) || !"http".equals(u.getScheme()) || (u.getPath() != null && u.getPath().startsWith("/api/"))) return null;
+                return Shell.get(getApplicationContext(), u);
             }
 
             @Override
