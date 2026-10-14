@@ -79,7 +79,10 @@ public class MainActivity extends Activity {
                 // The computer it reached is the one to open next time.
                 Uri u = Uri.parse(url);
                 if ("http".equals(u.getScheme()) && u.getHost() != null) {
-                    prefs.edit().putString("server", "http://" + u.getAuthority() + "/").apply();
+                    String server = "http://" + u.getAuthority() + "/";
+                    boolean fresh = !server.equals(prefs.getString("server", null));
+                    prefs.edit().putString("server", server).apply();
+                    if (fresh) Watch.start(getApplicationContext());   // just paired: watch this computer
                 }
                 CookieManager.getInstance().flush();
             }
@@ -93,6 +96,7 @@ public class MainActivity extends Activity {
 
         // Notifications from the computer, in the background; and a look for a new version of the app.
         Notices.schedule(this);
+        Watch.start(this);
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 1);
         new Thread(() -> { try { Updater.checkIfDue(getApplicationContext()); } catch (Exception e) { /* next time */ } }).start();

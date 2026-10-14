@@ -69,6 +69,7 @@ public class Updater extends BroadcastReceiver {
     public void onReceive(Context c, Intent i) {
         if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(i.getAction())) {
             Notices.schedule(c);
+            Watch.start(c);
             Notices.show(c, Notices.APP, 2, "Mandata is up to date", "Version " + BuildConfig.VERSION_NAME + " is installed.",
                 PendingIntent.getActivity(c, 4, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             return;

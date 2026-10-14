@@ -3,6 +3,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- The watcher (Watch.java): notifications within 30 seconds, started again after the phone starts. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:label="@string/app_name"
@@ -42,6 +46,16 @@
                 <data android:scheme="mandata" />
             </intent-filter>
         </activity>
+        <service android:name=".Watch" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Shows the new tasks Mandata finds on the user's own computer, over the local network, as they come." />
+        </service>
+        <receiver android:name=".Watch$Boot" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <!-- The package installer's answer to an update, and the app replaced by a new version. -->
         <receiver android:name=".Updater" android:exported="false">
             <intent-filter>

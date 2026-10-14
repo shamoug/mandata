@@ -54,21 +54,40 @@ public class Notices extends Worker {
     }
 
     /** The computer's notifications since the last one shown. The first check only notes where the list stands. */
-    static void fetch(Context c) throws Exception {
+    // The first look at a computer shows what came in the last 30 minutes, not its whole backlog.
+    static final long FIRST_LOOK_MS = 30 * 60 * 1000L;
+
+    /** The computer's notifications since the last one shown. Called by the watcher (Watch.java) and the 15-minute check. */
+    static synchronized void fetch(Context c) throws Exception {
         SharedPreferences prefs = c.getSharedPreferences("mandata", Context.MODE_PRIVATE);
         String server = prefs.getString("server", null);
         if (server == null) return;
         String cookie = CookieManager.getInstance().getCookie(server);
         if (cookie == null) return;
-        long last = prefs.getLong("noticeLast", -1);
-        JSONObject r = new JSONObject(get(server + "api/phone/notices" + (last >= 0 ? "?after=" + last : ""), cookie));
+        String key = "noticeLast:" + server;   // each computer counts its own
+        long last = prefs.getLong(key, -1);
+        JSONObject r = new JSONObject(get(server + "api/phone/notices?after=" + Math.max(last, 0), cookie));
+        long top = r.optLong("last", 0);
+        boolean first = last < 0 || top < last;   // never looked, or the computer's list started again
+        if (first) r = new JSONObject(get(server + "api/phone/notices?after=0", cookie));
         JSONArray list = r.optJSONArray("notices");
+        long since = System.currentTimeMillis() - FIRST_LOOK_MS;
         for (int i = 0; list != null && i < list.length(); i++) {
             JSONObject n = list.getJSONObject(i);
+            if (first && at(n.optString("at")) < since) continue;
             show(c, TASKS, 1000 + (int) (n.optLong("id") % 100000), n.optString("title", "Mandata"), n.optString("body", ""),
                 open(c, server + n.optString("route", "#/home")));
         }
-        prefs.edit().putLong("noticeLast", r.optLong("last", Math.max(last, 0))).apply();
+        prefs.edit().putLong(key, r.optLong("last", Math.max(last, 0))).apply();
+    }
+
+    /** An ISO time (2026-10-14T18:48:50.459Z) in milliseconds; 0 when it cannot be read. */
+    static long at(String iso) {
+        try {
+            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.ROOT);
+            f.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            return f.parse(iso.substring(0, 19)).getTime();
+        } catch (Exception e) { return 0; }
     }
 
     static String get(String url, String cookie) throws Exception {
