@@ -55,7 +55,8 @@ is paired with the QR code shown there; your mail and the AI stay on the compute
 
 - **iPhone:** scan the computer's QR code with the Camera, open it in Safari, then Share > **Add to Home Screen**.
 - **Android:** install [Mandata-Android.apk](https://shamoug.github.io/mandata/downloads/Mandata-Android.apk) (allow
-  installs from your browser when asked), then scan the computer's QR code and choose **Open in the Mandata app**.
+  installs from your browser when asked), open it and tap **Scan QR code**. Or pick **Android app** above the QR code in
+  Settings > Phone and scan it with the camera: its `mandata://` link opens straight in the app.
 
 ## This repository
 

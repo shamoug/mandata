@@ -35,8 +35,9 @@
     <h2>Pair with your computer</h2>
     <ol>
       <li>On your computer, open Mandata, <b>Settings &gt; Phone</b>, and switch phone access on.</li>
-      <li>Scan its QR code with this phone's camera and choose <b>Open in the Mandata app</b>.</li>
+      <li>Tap <b>Scan QR code</b> and point the phone at the QR code on the computer.</li>
     </ol>
+    <button type="button" id="scan">Scan QR code</button>
     <p style="margin:10px 0 0">Or type what it shows:</p>
     <form id="f">
       <label for="addr">Computer address</label>
@@ -58,6 +59,9 @@
       <a class="btn" href="${encodeURI(last)}#/home">Try again</a>`;
     document.getElementById('addr').value = host;
   }
+  // The scanner is the app's own (MainActivity.scan): what it reads opens Mandata on the computer.
+  const scan = document.getElementById('scan');
+  if (window.MandataApp) scan.onclick = () => window.MandataApp.scan(); else scan.hidden = true;
   document.getElementById('f').onsubmit = e => {
     e.preventDefault();
     let a = document.getElementById('addr').value.trim(), code = document.getElementById('code').value.replace(/[^a-z0-9]/gi, '');

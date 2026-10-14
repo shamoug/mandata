@@ -1,6 +1,6 @@
 // Mandata for Android: the phone app that Mandata on your computer serves (public/m), in a window of its own.
-// It remembers the computer it was paired with and opens there; a pairing QR code scanned with the camera opens it
-// through the mandata:// link the phone page offers. Pages on the computer (http) open here; anything else (the
+// It remembers the computer it was paired with and opens there. It pairs with the QR code in Mandata's Settings >
+// Phone: scanned in the app (Scan QR code, Google's code scanner), or with the camera, whose mandata:// link opens here. Pages on the computer (http) open here; anything else (the
 // website, mail links) opens in the phone's own apps. No data is kept here but the address and the pairing cookie.
 package org.mandata.phone;
 
@@ -12,12 +12,18 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.CookieManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 
 public class MainActivity extends Activity {
     private static final String START = "file:///android_asset/start.html";
@@ -42,6 +48,8 @@ public class MainActivity extends Activity {
         CookieManager.getInstance().setAcceptCookie(true);
 
         web.setWebChromeClient(new WebChromeClient());
+        // The pages ask for the scanner (window.MandataApp.scan()); what it reads is opened here, never handed back.
+        web.addJavascriptInterface(new Bridge(), "MandataApp");
         web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
@@ -75,6 +83,27 @@ public class MainActivity extends Activity {
             String server = prefs.getString("server", null);
             web.loadUrl(server != null ? server + "#/home" : START);
         }
+    }
+
+    /** What the pages may ask of the app. */
+    public class Bridge {
+        @JavascriptInterface
+        public void scan() { runOnUiThread(MainActivity.this::scan); }
+    }
+
+    /** Scan the pairing QR code with Google's code scanner: no camera permission, the scanner is Play services' own. */
+    private void scan() {
+        GmsBarcodeScannerOptions opts = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build();
+        GmsBarcodeScanning.getClient(this, opts).startScan()
+            .addOnSuccessListener(code -> {
+                String v = code.getRawValue() == null ? "" : code.getRawValue().trim();
+                Uri u = Uri.parse(v);
+                if (open(u)) return;
+                // The QR code for Safari and Chrome works too: http://<computer>:<port>/#pair=CODE
+                if ("http".equals(u.getScheme()) && u.getHost() != null && v.contains("#pair=")) { web.loadUrl(v); return; }
+                Toast.makeText(this, "That is not a Mandata pairing code. Scan the one in Mandata, Settings > Phone.", Toast.LENGTH_LONG).show();
+            })
+            .addOnFailureListener(e -> Toast.makeText(this, "The scanner is not available on this phone: type the address and code instead.", Toast.LENGTH_LONG).show());
     }
 
     /** A link from a pairing QR code: mandata://192.168.1.20:4321/pair?code=ABCD2345 opens the computer and pairs. */
