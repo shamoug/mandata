@@ -34,7 +34,7 @@ final class Shell {
             HttpURLConnection h = null;
             try {
                 h = (HttpURLConnection) new URL(u.toString()).openConnection();
-                h.setConnectTimeout(3000); h.setReadTimeout(10000);
+                h.setConnectTimeout(1500); h.setReadTimeout(10000);   // on the Wi-Fi the computer answers in milliseconds: the copy opens without a long blank wait
                 if (h.getResponseCode() == 200) {
                     byte[] b = Notices.read(h.getInputStream());
                     String t = h.getContentType() == null ? "application/octet-stream" : h.getContentType();
