@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light bars matching the phone page's top bar and tab bar; dark ones at night (values-night). -->
+    <style name="Mandata" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/bar</item>
+        <item name="android:navigationBarColor">#FF000000</item>
+        <item name="android:windowBackground">@color/page</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

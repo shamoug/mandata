@@ -47,10 +47,29 @@ Privacy & Security > Open Anyway. The one-line install needs no such step.
 On macOS and Linux Mandata reads mail from **Microsoft 365**: click **Sign in** in the app and enter the code it shows
 at Microsoft's sign-in page. Needs macOS 12 or later, or a 64-bit Linux desktop.
 
+### iPhone and Android
+
+[shamoug.github.io/mandata/phone.html](https://shamoug.github.io/mandata/phone.html) has a QR code for each. The phone
+reaches Mandata on your computer over the Wi-Fi, once phone access is on in Mandata's **Settings > Phone** and the phone
+is paired with the QR code shown there; your mail and the AI stay on the computer.
+
+- **iPhone:** scan the computer's QR code with the Camera, open it in Safari, then Share > **Add to Home Screen**.
+- **Android:** install [Mandata-Android.apk](https://shamoug.github.io/mandata/downloads/Mandata-Android.apk) (allow
+  installs from your browser when asked), then scan the computer's QR code and choose **Open in the Mandata app**.
+
 ## This repository
 
 The website (GitHub Pages, served from the `main` branch root), `install.sh` (the macOS and Linux installer, served
-from the site), the Windows installer zip in `downloads/`, and the workflow that builds the macOS and Linux packages.
+from the site), the Windows installer zip in `downloads/`, the workflow that builds the macOS and Linux packages, and
+the Android app (`android/`, copied from the app's `installerandroid`).
+
+### The Android app
+
+[.github/workflows/android.yml](.github/workflows/android.yml) builds `android/` whenever it changes (or from the
+Actions tab), signs it with the key in the repository secrets `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PASSWORD`,
+checks the signature and commits it as `downloads/Mandata-Android.apk`. Keep that key: an app signed with another one
+cannot install over the last. The QR codes on `phone.html` (`assets/qr-*.svg`) are drawn by the app's
+`tools/make-phone-qr.mjs`.
 
 ### Releasing
 

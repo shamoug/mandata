@@ -1,0 +1,46 @@
+// Mandata for Android. Built and signed by GitHub Actions (.github/workflows/android.yml in the website repository):
+// the signing key comes from the repository's secrets, so every build installs over the last one.
+plugins {
+    id 'com.android.application'
+}
+
+def env = System.getenv()
+
+android {
+    namespace 'org.mandata.phone'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'org.mandata.phone'
+        minSdk 24
+        // 34: the window keeps the system bars of its own, so the page needs no insets of them.
+        targetSdk 34
+        versionCode (env.VERSION_CODE ?: '1') as int
+        versionName env.VERSION_NAME ?: '1.0.0'
+    }
+
+    signingConfigs {
+        release {
+            if (env.KEYSTORE) {
+                storeFile file(env.KEYSTORE)
+                storePassword env.KEYSTORE_PASSWORD
+                keyAlias env.KEY_ALIAS
+                keyPassword env.KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (env.KEYSTORE) signingConfig signingConfigs.release
+        }
+    }
+
+    buildFeatures { buildConfig true }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

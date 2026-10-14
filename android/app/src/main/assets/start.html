@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mandata</title>
+<style>
+  :root{--page:#f4f6fb;--surface:#fff;--line:#e2e6f0;--line2:#d0d6e4;--ink:#141a26;--body:#2a3242;--muted:#5f6b80;--accent:#4263eb;--red:#e03131;--red-soft:#fff0f0;color-scheme:light}
+  @media (prefers-color-scheme:dark){:root{--page:#0f1525;--surface:#172036;--line:#26324d;--line2:#33405f;--ink:#eef2fa;--body:#d5dcea;--muted:#9aa6bd;--accent:#6f8bff;--red:#ff6b6b;--red-soft:#3a1d24;color-scheme:dark}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--body);font:15px/1.45 system-ui,Roboto,sans-serif;padding:7vh 18px 30px}
+  main{max-width:440px;margin:0 auto}
+  .logo{display:block;width:84px;height:84px;margin:0 auto;border-radius:20px;background:#15aabf;display:grid;place-items:center}
+  h1{color:var(--ink);font-size:25px;text-align:center;margin:16px 0 6px}
+  p.lead{color:var(--muted);text-align:center;margin:0 0 18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+  .card h2{font-size:16px;color:var(--ink);margin:0 0 8px}
+  ol{margin:0;padding-left:20px}li{margin:0 0 8px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:12px 0 6px}
+  input{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--surface);color:var(--ink);font-size:16px}
+  input.code{font:600 22px/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;text-align:center}
+  button,.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:14px;border-radius:12px;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 15px system-ui,Roboto,sans-serif;text-decoration:none}
+  .btn.plain{background:var(--surface);color:var(--ink);border-color:var(--line2)}
+  .err{padding:12px 14px;border:1px solid var(--red);background:var(--red-soft);color:var(--red);border-radius:12px;margin-bottom:6px}
+  b{color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+  <div class="logo"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></div>
+  <h1>Mandata</h1>
+  <p class="lead">Your tasks, from Mandata on your computer. Your mail stays on the computer.</p>
+  <div id="error" hidden></div>
+  <div class="card">
+    <h2>Pair with your computer</h2>
+    <ol>
+      <li>On your computer, open Mandata, <b>Settings &gt; Phone</b>, and switch phone access on.</li>
+      <li>Scan its QR code with this phone's camera and choose <b>Open in the Mandata app</b>.</li>
+    </ol>
+    <p style="margin:10px 0 0">Or type what it shows:</p>
+    <form id="f">
+      <label for="addr">Computer address</label>
+      <input id="addr" inputmode="url" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="192.168.1.20:4321" required>
+      <label for="code">Pairing code</label>
+      <input id="code" class="code" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABCD2345">
+      <button>Connect</button>
+    </form>
+  </div>
+</main>
+<script>
+  // The address as typed ("192.168.1.20:4321", "http://192.168.1.20:4321/#pair=..." pasted from the computer) and the code.
+  const q = new URLSearchParams(location.search), last = q.get('last') || '';
+  const box = document.getElementById('error');
+  if (q.get('error') && last) {
+    const host = last.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    box.hidden = false;
+    box.innerHTML = `<div class="err"><b style="color:inherit">Cannot reach your computer</b><br>At ${host.replace(/[<>&]/g, '')}. Check that it is on, Mandata is running, phone access is on, and this phone is on the same Wi-Fi.</div>
+      <a class="btn" href="${encodeURI(last)}#/home">Try again</a>`;
+    document.getElementById('addr').value = host;
+  }
+  document.getElementById('f').onsubmit = e => {
+    e.preventDefault();
+    let a = document.getElementById('addr').value.trim(), code = document.getElementById('code').value.replace(/[^a-z0-9]/gi, '');
+    const pasted = a.match(/#pair=([A-Za-z0-9]+)/); if (pasted && !code) code = pasted[1];
+    a = a.replace(/^https?:\/\//i, '').replace(/[\/#?].*$/, '');
+    if (!/:\d+$/.test(a)) a += ':4321';
+    location.href = `http://${a}/${code ? '#pair=' + encodeURIComponent(code) : '#/home'}`;
+  };
+</script>
+</body>
+</html>

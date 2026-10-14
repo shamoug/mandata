@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From Android 8.1 the navigation bar can be light, with dark buttons, like the page's tab bar. -->
+    <style name="Mandata" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/bar</item>
+        <item name="android:navigationBarColor">@color/bar</item>
+        <item name="android:windowBackground">@color/page</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mandata on the computer is reached over the home or office network by its address (http://192.168.x.x:4321):
+     there is no certificate for a computer's own address, so plain http is allowed. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
