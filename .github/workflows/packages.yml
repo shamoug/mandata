@@ -1,0 +1,144 @@
+# Builds Mandata for macOS and Linux from the release's Mandata-app.tar.gz (made by installer\pack.bat on Windows),
+# on real Macs and Linux machines, tests that each package starts, and attaches the packages to the same release:
+#   macOS:  Mandata-mac-arm64.dmg (Apple silicon), Mandata-mac-x64.dmg (Intel), and their .zip for install.sh
+#   Linux:  Mandata-linux-<x64|arm64>.AppImage, .deb and .tar.gz
+#   SHA256SUMS.txt for every file of the release, which install.sh checks.
+# Then install.sh is run against the finished release on a Mac and on Linux, as a user would.
+name: macOS and Linux packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build (for example v2.2.0)
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+  GH_TOKEN: ${{ github.token }}
+
+concurrency:
+  group: packages-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: true
+
+jobs:
+  mac:
+    name: macOS ${{ matrix.arch }}
+    runs-on: macos-14   # Apple silicon; the Intel build is made here too, and only the native one is started
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x64]
+    steps:
+      - name: Get the app files from the release
+        run: |
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in
+          mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+      - name: Build Mandata.app, .dmg and .zip
+        run: bash app/installer/unix/build-mac.sh app ${{ matrix.arch }} out
+      - name: Start it and check it answers
+        if: matrix.arch == 'arm64'
+        run: |
+          VERSION=$(sed -n 's/^ *"version": *"\([^"]*\)".*/\1/p' app/package.json | head -n1)
+          ditto -x -k out/Mandata-mac-arm64.zip test
+          bash app/installer/unix/smoke.sh "$VERSION" test/Mandata.app/Contents/MacOS/Mandata
+      - name: Check the disk image opens and holds a signed app
+        run: |
+          hdiutil attach -nobrowse -readonly -mountpoint /tmp/mandata-dmg out/Mandata-mac-${{ matrix.arch }}.dmg
+          codesign --verify --deep --strict /tmp/mandata-dmg/Mandata.app
+          test -L /tmp/mandata-dmg/Applications
+          hdiutil detach /tmp/mandata-dmg
+      - name: Attach to the release
+        run: gh release upload "$TAG" out/* -R "$GITHUB_REPOSITORY" --clobber
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: x64, runner: ubuntu-24.04 }
+          - { arch: arm64, runner: ubuntu-24.04-arm }
+    steps:
+      - name: Tools and the libraries Mandata needs
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq --no-install-recommends xvfb xauth dbus-x11 libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libnotify4 xdg-utils file
+      - name: Get the app files from the release
+        run: |
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in
+          mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+      - name: Build the .tar.gz, .deb and AppImage
+        run: bash app/installer/unix/build-linux.sh app out
+      - name: Start each one and check it answers
+        run: |
+          VERSION=$(sed -n 's/^ *"version": *"\([^"]*\)".*/\1/p' app/package.json | head -n1)
+          SMOKE="xvfb-run -a bash app/installer/unix/smoke.sh $VERSION"
+          echo "--- .tar.gz (no root: Chromium's sandbox as Ubuntu allows it)"
+          mkdir t && tar -xzf out/Mandata-linux-${{ matrix.arch }}.tar.gz -C t
+          $SMOKE t/Mandata/mandata
+          echo "--- AppImage"
+          $SMOKE env APPIMAGE_EXTRACT_AND_RUN=1 out/Mandata-linux-${{ matrix.arch }}.AppImage
+          echo "--- .deb (installed with its sandbox helper set up)"
+          sudo apt-get install -yq ./out/Mandata-linux-${{ matrix.arch }}.deb
+          test "$(stat -c '%U %a' /opt/Mandata/chrome-sandbox)" = "root 4755"
+          $SMOKE mandata
+          sudo apt-get remove -yq mandata
+      - name: Attach to the release
+        run: gh release upload "$TAG" out/* -R "$GITHUB_REPOSITORY" --clobber
+
+  sums:
+    name: SHA256SUMS.txt
+    needs: [mac, linux]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checksums of every file in the release
+        run: |
+          mkdir r && cd r
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" --skip-existing
+          rm -f SHA256SUMS.txt
+          sha256sum * > ../SHA256SUMS.txt
+          cat ../SHA256SUMS.txt
+          gh release upload "$TAG" ../SHA256SUMS.txt -R "$GITHUB_REPOSITORY" --clobber
+
+  install-script:
+    name: install.sh on ${{ matrix.os }}
+    needs: sums
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Libraries (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq --no-install-recommends xvfb xauth libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libnotify4
+      - name: Install with the script users run
+        run: bash install.sh --version "$TAG" --no-ai --no-launch
+      - name: Installed where it says, and it starts
+        run: |
+          VERSION="${TAG#v}"
+          if [ "$RUNNER_OS" = macOS ]; then
+            test -x "$HOME/Applications/Mandata.app/Contents/MacOS/Mandata"
+            codesign --verify --deep --strict "$HOME/Applications/Mandata.app"
+            gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in && mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+            bash app/installer/unix/smoke.sh "$VERSION" "$HOME/Applications/Mandata.app/Contents/MacOS/Mandata"
+          else
+            test -x "$HOME/.local/bin/mandata"
+            test -f "$HOME/.local/share/applications/mandata.desktop"
+            gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in && mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+            xvfb-run -a bash app/installer/unix/smoke.sh "$VERSION" "$HOME/.local/bin/mandata"
+          fi
+      - name: Uninstall with the same script
+        run: |
+          printf 'n\n' | bash install.sh --uninstall
+          if [ "$RUNNER_OS" = macOS ]; then test ! -e "$HOME/Applications/Mandata.app"; else test ! -e "$HOME/.local/bin/mandata"; fi

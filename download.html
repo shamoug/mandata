@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Download Mandata</title>
-<meta name="description" content="Download the Mandata installer for Windows: a 0.5 MB zip of scripts that installs for your user account with no admin rights.">
+<meta name="description" content="Download Mandata for Windows, macOS or Linux. Per-user install, no admin rights; the AI runs on your own computer.">
 <link rel="icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,66 +24,187 @@
 
 <section class="hero page-hero">
   <div class="wrap"><div class="hero-copy">
-    <span class="eyebrow">Download</span>
-    <h1>Mandata for Windows</h1>
-    <p class="lede">A zip of install scripts, not a setup program. Nothing to sign, nothing that needs an administrator. It runs on a standard work laptop with Windows 10 or 11 and classic Outlook.</p>
+    <span class="eyebrow">Download · Version 2.2.0</span>
+    <h1>Mandata for Windows, macOS and Linux</h1>
+    <p class="lede">It installs for your user account, with no administrator rights. The AI runs on your own computer, and your mail never leaves it.</p>
   </div></div>
 </section>
 
 <section class="band after-hero">
-  <div class="wrap stack" style="gap:56px">
-    <div class="dl-card">
-      <img src="assets/icon.png" alt="">
-      <div>
-        <h2>Mandata-Installer.zip</h2>
-        <div class="dl-meta"><span>Version 2.1.0</span><span>About 0.5 MB</span><span>Windows 10 / 11, x64 or ARM64</span><span>Per-user install</span></div>
-      </div>
-      <a class="btn btn-primary" href="downloads/Mandata-Installer.zip" download>Download zip</a>
+  <div class="wrap stack" style="gap:40px">
+    <div class="os-tabs" role="tablist" aria-label="Choose your system">
+      <button role="tab" id="tab-windows" aria-controls="windows" aria-selected="true">Windows</button>
+      <button role="tab" id="tab-mac" aria-controls="mac" aria-selected="false">macOS</button>
+      <button role="tab" id="tab-linux" aria-controls="linux" aria-selected="false">Linux</button>
     </div>
 
-    <div class="two">
-      <div class="stack" style="gap:20px">
-        <span class="eyebrow">Install</span>
-        <h2>Four steps</h2>
-        <ol class="steps">
-          <li><h3>Unblock the zip</h3><p>Right-click the downloaded zip, choose <b>Properties</b>, tick <b>Unblock</b>, then OK. This stops Windows asking again for each script.</p></li>
-          <li><h3>Extract it</h3><p>Right-click, <b>Extract All</b>. Open the folder it makes.</p></li>
-          <li><h3>Double-click <code>install.bat</code></h3><p>It checks the laptop, downloads the app runtime from GitHub (checked against its published SHA-256), copies the app to <code>%LOCALAPPDATA%\Programs\Mandata</code> and adds Start Menu and Desktop shortcuts.</p></li>
-          <li><h3>Say yes to the local AI</h3><p>It offers to install Ollama and the model that best fits your laptop's memory and graphics card, a 3 to 20 GB download. Then Mandata starts and reads the last 30 days of mail.</p></li>
-        </ol>
-        <p class="note"><b>Updating:</b> download the new zip and run <code>install.bat</code> again. Your data in <code>%USERPROFILE%\.mandata</code> is never touched by an update.</p>
-      </div>
-
-      <div class="stack" style="gap:20px">
-        <span class="eyebrow">Requirements</span>
-        <h2>What the laptop needs</h2>
-        <div class="tablebox">
-          <table class="req">
-            <tr><th>Windows</th><td>Windows 10 or 11, 64-bit (x64 or ARM64). Not yet on macOS or Linux: Mandata reads mail through classic Outlook for Windows.</td></tr>
-            <tr><th>Outlook</th><td>Classic Outlook, signed in. The new Outlook does not offer the connection Mandata reads mail through.</td></tr>
-            <tr><th>Rights</th><td>None beyond a normal user account. PowerShell scripts must be allowed to run.</td></tr>
-            <tr><th>Disk</th><td>About 0.8 GB for the app, plus the AI model's size and 2 GB (about 5 GB for <code>phi4-mini</code>).</td></tr>
-            <tr><th>Memory</th><td>8 GB works; 16 GB or a separate graphics card reads mail much faster.</td></tr>
-            <tr><th>Internet</th><td>Only during install, to reach GitHub and Ollama. Reading mail is offline.</td></tr>
-          </table>
+    <!-- ===================== Windows ===================== -->
+    <div class="os-panel stack" id="windows" role="tabpanel" aria-labelledby="tab-windows" style="gap:56px">
+      <div class="dl-card">
+        <img src="assets/icon.png" alt="">
+        <div>
+          <h2>Mandata-Installer.zip</h2>
+          <div class="dl-meta"><span>Version 2.2.0</span><span>About 0.5 MB</span><span>Windows 10 / 11, x64 or ARM64</span><span>Per-user install</span></div>
         </div>
-        <p class="fine">Prefer the command line? Options go after <code>install.bat</code>: <code>-AI no</code> skips the AI, <code>-Model qwen3:8b</code> picks a model, <code>-NoDesktopIcon</code>, <code>-NoLaunch</code>.</p>
+        <a class="btn btn-primary" href="downloads/Mandata-Installer.zip" download>Download zip</a>
+      </div>
+
+      <div class="two">
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Install</span>
+          <h2>Four steps</h2>
+          <ol class="steps">
+            <li><h3>Unblock the zip</h3><p>Right-click the downloaded zip, choose <b>Properties</b>, tick <b>Unblock</b>, then OK. This stops Windows asking again for each script.</p></li>
+            <li><h3>Extract it</h3><p>Right-click, <b>Extract All</b>. Open the folder it makes.</p></li>
+            <li><h3>Double-click <code>install.bat</code></h3><p>It checks the laptop, downloads the app runtime from GitHub (checked against its published SHA-256), copies the app to <code>%LOCALAPPDATA%\Programs\Mandata</code> and adds Start Menu and Desktop shortcuts.</p></li>
+            <li><h3>Say yes to the local AI</h3><p>It offers to install Ollama and the model that best fits your laptop's memory and graphics card, a 3 to 20 GB download. Then Mandata starts and reads the last 30 days of mail.</p></li>
+          </ol>
+          <p class="note"><b>Updating:</b> download the new zip and run <code>install.bat</code> again. Your data in <code>%USERPROFILE%\.mandata</code> is never touched by an update.</p>
+        </div>
+
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Requirements</span>
+          <h2>What the laptop needs</h2>
+          <div class="tablebox">
+            <table class="req">
+              <tr><th>Windows</th><td>Windows 10 or 11, 64-bit (x64 or ARM64).</td></tr>
+              <tr><th>Mail</th><td>Classic Outlook, signed in. With the new Outlook, choose <b>Microsoft 365</b> in Settings &gt; Mail and sign in there instead.</td></tr>
+              <tr><th>Rights</th><td>None beyond a normal user account. PowerShell scripts must be allowed to run.</td></tr>
+              <tr><th>Disk</th><td>About 0.8 GB for the app, plus the AI model's size and 2 GB (about 5 GB for <code>phi4-mini</code>).</td></tr>
+              <tr><th>Memory</th><td>8 GB works; 16 GB or a separate graphics card reads mail much faster.</td></tr>
+              <tr><th>Internet</th><td>Only during install, to reach GitHub and Ollama. Reading mail is offline.</td></tr>
+            </table>
+          </div>
+          <p class="fine">Prefer the command line? Options go after <code>install.bat</code>: <code>-AI no</code> skips the AI, <code>-Model qwen3:8b</code> picks a model, <code>-NoDesktopIcon</code>, <code>-NoLaunch</code>.</p>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">If something goes wrong</span>
+          <h2>Troubleshooting</h2>
+        </div>
+        <div>
+          <details><summary>The scripts don't run, or "ConstrainedLanguage mode"</summary><p>An IT policy blocks PowerShell scripts on this laptop. Ask your IT service desk to allow them, or to run the installer for you.</p></details>
+          <details><summary>Mandata.exe is blocked from starting</summary><p>Some policies (AppLocker) allow programs only from Program Files. Ask IT to allow <code>%LOCALAPPDATA%\Programs\Mandata\Mandata.exe</code>. A code-signing certificate would not change this.</p></details>
+          <details><summary>A download fails</summary><p>Check the internet connection or VPN. The installer uses the Windows proxy settings and signs in to the proxy as you. Run <code>install.bat</code> again and it continues where it stopped.</p></details>
+          <details><summary>"Could not replace ..."</summary><p>Quit Mandata from its tray icon (right-click, Quit) and run <code>install.bat</code> again.</p></details>
+          <details><summary>Windows says "Windows protected your PC"</summary><p>The zip was not unblocked before extracting. Click <b>More info</b>, then <b>Run anyway</b>, or delete the folder, unblock the zip (step 1) and extract it again.</p></details>
+          <details><summary>How do I uninstall?</summary><p>Settings, Apps, Mandata, Uninstall, or double-click <code>uninstall.bat</code>. It asks before removing your data or the AI model; both are kept by default.</p></details>
+          <details><summary>Can I pin it to the taskbar?</summary><p>Windows lets no installer do that. While Mandata runs, right-click its taskbar icon and choose <b>Pin to taskbar</b>.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== macOS ===================== -->
+    <div class="os-panel stack" id="mac" role="tabpanel" aria-labelledby="tab-mac" style="gap:56px">
+      <div class="dl-card dl-cmd">
+        <img src="assets/icon.png" alt="">
+        <div class="stack" style="gap:10px">
+          <h2>Install with one command <span class="tag">Recommended</span></h2>
+          <p class="fine">Open <b>Terminal</b> (in Applications &gt; Utilities), paste this and press Return. It installs Mandata in your own Applications folder, checks it against its published SHA-256, and offers to set up the local AI. No password, and no security prompts.</p>
+          <div class="cmd"><code>curl -fsSL https://shamoug.github.io/mandata/install.sh | bash</code><button type="button" class="copy" data-copy="curl -fsSL https://shamoug.github.io/mandata/install.sh | bash">Copy</button></div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:16px">
+        <span class="eyebrow">Or download the app</span>
+        <div class="dl-grid">
+          <a class="dl-file" href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-mac-arm64.dmg"><b>Apple silicon</b><span>M1, M2, M3, M4 and later · .dmg</span></a>
+          <a class="dl-file" href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-mac-x64.dmg"><b>Intel</b><span>Macs with an Intel processor · .dmg</span></a>
+        </div>
+        <p class="fine">Not sure which? Apple menu &gt; <b>About This Mac</b>: "Chip: Apple M..." is Apple silicon; "Processor: Intel" is Intel.</p>
+      </div>
+
+      <div class="two">
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Install the .dmg</span>
+          <h2>Three steps</h2>
+          <ol class="steps">
+            <li><h3>Open the .dmg and drag Mandata to Applications</h3><p>Then eject the disk image.</p></li>
+            <li><h3>Open Mandata once, then allow it</h3><p>Mandata is not notarized by Apple, so the first time macOS says it cannot check it. Open <b>System Settings &gt; Privacy &amp; Security</b>, scroll down and click <b>Open Anyway</b> beside Mandata. The one-command install above avoids this step.</p></li>
+            <li><h3>Sign in and set up the AI</h3><p>Click <b>Sign in</b> at the top of the app and sign in with your Microsoft 365 account. For the AI, install <a href="https://ollama.com/download">Ollama</a>; Mandata downloads the model it needs when it starts.</p></li>
+          </ol>
+          <p class="note"><b>Updating:</b> run the command again, or drag the new version over the old one. Your data in <code>~/.mandata</code> is never touched by an update.</p>
+        </div>
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Requirements</span>
+          <h2>What the Mac needs</h2>
+          <div class="tablebox">
+            <table class="req">
+              <tr><th>macOS</th><td>macOS 12 (Monterey) or later, Apple silicon or Intel.</td></tr>
+              <tr><th>Mail</th><td>A Microsoft 365 (work or school) mailbox. Mandata reads it after you sign in once in the app, with a code at Microsoft's own sign-in page; Mandata never sees your password.</td></tr>
+              <tr><th>Rights</th><td>None beyond a normal user account.</td></tr>
+              <tr><th>Disk</th><td>About 0.5 GB for the app, plus about 5 GB for the AI.</td></tr>
+              <tr><th>Memory</th><td>8 GB works. On Apple silicon the AI runs on the graphics, which reads mail fast.</td></tr>
+              <tr><th>Internet</th><td>To install, and to read your mail from Microsoft 365. The AI works offline.</td></tr>
+            </table>
+          </div>
+          <p class="fine">Options go after <code>bash -s --</code>: <code>--no-ai</code>, <code>--model qwen3:8b</code>, <code>--no-launch</code>, <code>--uninstall</code>. For example: <code>curl -fsSL https://shamoug.github.io/mandata/install.sh | bash -s -- --no-ai</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Linux ===================== -->
+    <div class="os-panel stack" id="linux" role="tabpanel" aria-labelledby="tab-linux" style="gap:56px">
+      <div class="dl-card dl-cmd">
+        <img src="assets/icon.png" alt="">
+        <div class="stack" style="gap:10px">
+          <h2>Install with one command <span class="tag">Recommended</span></h2>
+          <p class="fine">In a terminal, on any distribution. It installs Mandata for you in <code>~/.local/share/mandata</code> with a menu entry, checks it against its published SHA-256, and offers to set up the local AI (Ollama's own installer asks for your password).</p>
+          <div class="cmd"><code>curl -fsSL https://shamoug.github.io/mandata/install.sh | bash</code><button type="button" class="copy" data-copy="curl -fsSL https://shamoug.github.io/mandata/install.sh | bash">Copy</button></div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:16px">
+        <span class="eyebrow">Or download a package</span>
+        <div class="dl-grid three">
+          <a class="dl-file" href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-x64.deb"><b>.deb</b><span>Ubuntu, Debian, Mint, Pop!_OS · x64</span></a>
+          <a class="dl-file" href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-x64.AppImage"><b>AppImage</b><span>Any distribution, one file · x64</span></a>
+          <a class="dl-file" href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-x64.tar.gz"><b>.tar.gz</b><span>Unpack anywhere, run <code>./mandata</code> · x64</span></a>
+        </div>
+        <p class="fine">ARM64 (aarch64): <a href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-arm64.deb">.deb</a> · <a href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-arm64.AppImage">AppImage</a> · <a href="https://github.com/shamoug/mandata/releases/latest/download/Mandata-linux-arm64.tar.gz">.tar.gz</a> · Checksums: <a href="https://github.com/shamoug/mandata/releases/latest/download/SHA256SUMS.txt">SHA256SUMS.txt</a></p>
+      </div>
+
+      <div class="two">
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Install a package</span>
+          <h2>Pick one</h2>
+          <ol class="steps">
+            <li><h3>.deb</h3><p><code>sudo apt install ./Mandata-linux-x64.deb</code>, then open Mandata from your applications menu. It installs to <code>/opt/Mandata</code> with Chromium's sandbox set up.</p></li>
+            <li><h3>AppImage</h3><p>Make it executable (<code>chmod +x Mandata-linux-x64.AppImage</code>, or Properties &gt; Allow executing) and double-click it.</p></li>
+            <li><h3>Sign in and set up the AI</h3><p>Click <b>Sign in</b> at the top of the app and sign in with your Microsoft 365 account. Install <a href="https://ollama.com/download/linux">Ollama</a> for the AI; Mandata downloads the model it needs when it starts.</p></li>
+          </ol>
+          <p class="note"><b>Updating:</b> run the command again, or install the new package over the old one. Your data in <code>~/.mandata</code> is never touched by an update.</p>
+        </div>
+        <div class="stack" style="gap:20px">
+          <span class="eyebrow">Requirements</span>
+          <h2>What the computer needs</h2>
+          <div class="tablebox">
+            <table class="req">
+              <tr><th>Linux</th><td>64-bit (x64 or ARM64) with a desktop: GNOME, KDE, Cinnamon, Xfce and others, on X11 or Wayland. Ubuntu 22.04, Debian 12, Fedora 38 or newer.</td></tr>
+              <tr><th>Mail</th><td>A Microsoft 365 (work or school) mailbox, signed in once in the app with a code at Microsoft's own sign-in page.</td></tr>
+              <tr><th>Tray icon</th><td>Shown by KDE, Cinnamon, Xfce and Ubuntu. Plain GNOME needs the AppIndicator extension; without it, open Mandata from the menu again to show its window.</td></tr>
+              <tr><th>Disk</th><td>About 0.5 GB for the app, plus about 5 GB for the AI.</td></tr>
+              <tr><th>Memory</th><td>8 GB works; an NVIDIA or AMD graphics card reads mail much faster.</td></tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="two">
       <div class="stack" style="gap:20px">
-        <span class="eyebrow">If something goes wrong</span>
-        <h2>Troubleshooting</h2>
+        <span class="eyebrow">macOS and Linux</span>
+        <h2>Questions</h2>
       </div>
       <div>
-        <details><summary>The scripts don't run, or "ConstrainedLanguage mode"</summary><p>An IT policy blocks PowerShell scripts on this laptop. Ask your IT service desk to allow them, or to run the installer for you.</p></details>
-        <details><summary>Mandata.exe is blocked from starting</summary><p>Some policies (AppLocker) allow programs only from Program Files. Ask IT to allow <code>%LOCALAPPDATA%\Programs\Mandata\Mandata.exe</code>. A code-signing certificate would not change this.</p></details>
-        <details><summary>A download fails</summary><p>Check the internet connection or VPN. The installer uses the Windows proxy settings and signs in to the proxy as you. Run <code>install.bat</code> again and it continues where it stopped.</p></details>
-        <details><summary>"Could not replace ..."</summary><p>Quit Mandata from its tray icon (right-click, Quit) and run <code>install.bat</code> again.</p></details>
-        <details><summary>Windows says "Windows protected your PC"</summary><p>The zip was not unblocked before extracting. Click <b>More info</b>, then <b>Run anyway</b>, or delete the folder, unblock the zip (step 1) and extract it again.</p></details>
-        <details><summary>How do I uninstall?</summary><p>Settings, Apps, Mandata, Uninstall, or double-click <code>uninstall.bat</code>. It asks before removing your data or the AI model; both are kept by default.</p></details>
-        <details><summary>Can I pin it to the taskbar?</summary><p>Windows lets no installer do that. While Mandata runs, right-click its taskbar icon and choose <b>Pin to taskbar</b>.</p></details>
+        <details><summary>How does Mandata read my mail without Outlook for Windows?</summary><p>Through Microsoft 365, the service your Outlook mailbox lives in. You sign in once: Mandata shows a short code, you enter it at Microsoft's sign-in page in your browser, and Microsoft gives Mandata access to your mailbox. Mandata keeps that sign-in on your computer only (encrypted by the system keychain), and the AI that reads the mail still runs on your computer.</p></details>
+        <details><summary>The sign-in says an administrator must approve it</summary><p>Some organisations let only approved apps open mailboxes. Ask your IT service desk to approve access for Mandata, or to register an app for it in Microsoft Entra ID; they then give you an app ID, which you enter in Mandata's Settings &gt; Mail.</p></details>
+        <details><summary>Can I use a personal Outlook.com account?</summary><p>Mandata is made for work and school mailboxes. To try a personal account, set the Microsoft 365 directory in Settings &gt; Mail to <code>common</code>.</p></details>
+        <details><summary>Mandata does not open on Linux</summary><p>Install the libraries it uses. Debian or Ubuntu: <code>sudo apt install libgtk-3-0 libnss3 libasound2 libgbm1 libxss1 libnotify4</code>. Fedora: <code>sudo dnf install gtk3 nss alsa-lib mesa-libgbm libXScrnSaver libnotify</code>.</p></details>
+        <details><summary>How do I uninstall?</summary><p>Run <code>curl -fsSL https://shamoug.github.io/mandata/install.sh | bash -s -- --uninstall</code>. It asks before deleting your data, which is kept by default. A .deb is removed with <code>sudo apt remove mandata</code>; a .dmg install by moving Mandata to the Bin.</p></details>
+        <details><summary>Does it start when I sign in to the computer?</summary><p>Yes, from its first start, quietly in the background. Untick <b>Open at login</b> (macOS) or <b>Start at login</b> (Linux) in its tray menu to stop that.</p></details>
       </div>
     </div>
   </div>
@@ -91,9 +212,28 @@
 
 <footer class="foot">
   <div class="wrap">
-    <span>Mandata 2.0 · An innovation sandbox project</span>
+    <span>Mandata 2.2 · An innovation sandbox project</span>
     <span><a href="about.html">About</a> · <a href="./">Home</a> · <a href="https://github.com/shamoug/mandata">GitHub</a></span>
   </div>
 </footer>
+<script>
+// The visitor's system is shown first; the tabs switch, and a link to #mac or #linux opens that one.
+(() => {
+  const tabs = [...document.querySelectorAll('.os-tabs [role=tab]')];
+  const pick = id => tabs.forEach(t => { const on = t.getAttribute('aria-controls') === id; t.setAttribute('aria-selected', on); document.getElementById(t.getAttribute('aria-controls')).hidden = !on; });
+  const ua = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent;
+  const guess = /mac/i.test(ua) ? 'mac' : /linux|x11|cros/i.test(ua) && !/android/i.test(navigator.userAgent) ? 'linux' : 'windows';
+  pick(['windows', 'mac', 'linux'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guess);
+  tabs.forEach(t => t.addEventListener('click', () => { pick(t.getAttribute('aria-controls')); history.replaceState(null, '', '#' + t.getAttribute('aria-controls')); }));
+  document.querySelector('.os-tabs').addEventListener('keydown', e => {
+    const i = tabs.indexOf(document.activeElement); if (i < 0 || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click();
+  });
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; } catch { b.textContent = 'Select and copy'; }
+    setTimeout(() => { b.textContent = 'Copy'; }, 2000);
+  }));
+})();
+</script>
 </body>
 </html>

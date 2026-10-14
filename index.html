@@ -25,14 +25,14 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="eyebrow">For Outlook on Windows · Local AI</span>
+      <span class="eyebrow">For Outlook · Windows, macOS, Linux · Local AI</span>
       <h1>Every task in your email, found and followed to the end.</h1>
       <p class="lede">Mandata reads your Outlook threads with an AI that runs on your own laptop. It lists who asked whom to do what and by when, and closes each task when the email that settles it arrives. Nobody types tasks in by hand.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="download.html">Download for Windows <small>v2.0 · 0.5 MB</small></a>
+        <a class="btn btn-primary" id="dlBtn" href="download.html">Download Mandata <small>v2.2 · free</small></a>
         <a class="btn btn-ghost" href="#how">See how it works</a>
       </div>
-      <p class="fine">Installs for your user account only. No admin rights, no setup program, no data leaves the computer.</p>
+      <p class="fine">For <a href="download.html#windows">Windows</a>, <a href="download.html#mac">macOS</a> and <a href="download.html#linux">Linux</a>. Installs for your user account only: no admin rights, and no mail leaves the computer.</p>
     </div>
 
     <div class="demo" aria-label="Example: an email thread turned into a task">
@@ -120,10 +120,10 @@
     <div class="head">
       <span class="eyebrow">Rules it follows</span>
       <h2>Built for mail you cannot send to the cloud</h2>
-      <p class="lede">The AI is <a href="https://ollama.com">Ollama</a>, running on your laptop. Mandata talks to classic Outlook directly and keeps its data in one file in your user profile.</p>
+      <p class="lede">The AI is <a href="https://ollama.com">Ollama</a>, running on your laptop. On Windows, Mandata talks to classic Outlook directly; on macOS and Linux it reads your Microsoft 365 mailbox after you sign in once. It keeps its data in one file in your home folder.</p>
     </div>
     <div class="rules">
-      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3>Email stays on this computer</h3><p>No cloud AI, no telemetry, no account. Your data is one SQLite file in <code>%USERPROFILE%\.mandata</code>.</p></div>
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3>Email stays on this computer</h3><p>No cloud AI, no telemetry, no Mandata account. Your data is one SQLite file in <code>.mandata</code> in your home folder.</p></div>
       <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg><h3>Nothing is sent without you</h3><p>Email goes out only when you press Send and confirm. The app drafts; you decide.</p></div>
       <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><h3>No invented deadlines</h3><p>A task gets a deadline only when an email states it, quoted from the thread, or when you set one.</p></div>
       <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg><h3>Deleted is recoverable</h3><p>Deleted tasks wait in a recycle bin for 30 days. Backups can be exported to OneDrive or a USB stick and imported on another laptop.</p></div>
@@ -136,7 +136,7 @@
     <div class="cta">
       <div class="stack">
         <h2>Install it in about two minutes</h2>
-        <p>Download the zip, extract it, double-click <code>install.bat</code>. It fetches what is missing and adds Start Menu and Desktop shortcuts.</p>
+        <p>On Windows, download the zip and double-click <code>install.bat</code>. On macOS and Linux, paste one command in a terminal. Each fetches what is missing, adds the app to your menu, and offers to set up the local AI.</p>
       </div>
       <a class="btn btn-primary" href="download.html">Go to download</a>
     </div>
@@ -145,9 +145,15 @@
 
 <footer class="foot">
   <div class="wrap">
-    <span>Mandata 2.0 · An innovation sandbox project</span>
+    <span>Mandata 2.2 · An innovation sandbox project</span>
     <span><a href="about.html">About</a> · <a href="download.html">Download</a> · <a href="https://github.com/shamoug/mandata">GitHub</a></span>
   </div>
 </footer>
+<script>
+// The download button names the visitor's system and opens its tab.
+(() => { const ua = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent, b = document.getElementById('dlBtn');
+  const os = /mac/i.test(ua) ? ['mac', 'macOS'] : /linux|x11|cros/i.test(ua) && !/android/i.test(navigator.userAgent) ? ['linux', 'Linux'] : /win/i.test(ua) ? ['windows', 'Windows'] : null;
+  if (os && b) { b.href = 'download.html#' + os[0]; b.firstChild.textContent = `Download for ${os[1]} `; } })();
+</script>
 </body>
 </html>
