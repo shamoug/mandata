@@ -24,7 +24,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- A pairing QR code, through the phone page's "Open in the Mandata app": mandata://<computer>:<port>/pair?code=... -->
+            <!-- The pairing QR code in Mandata's Settings > Phone: https://shamoug.github.io/mandata/open.html#<computer>:<port>:<code>.
+                 Verified by https://shamoug.github.io/.well-known/assetlinks.json, so the phone opens it here, not in the browser. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="shamoug.github.io" android:pathPrefix="/mandata/open" />
+            </intent-filter>
+            <!-- The phone version's "Open in the Mandata app": mandata://<computer>:<port>/pair?code=... -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

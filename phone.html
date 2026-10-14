@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mandata on your phone</title>
-<meta name="description" content="Mandata on iPhone and Android: your tasks, deadlines and Ask Mandata on your phone, from Mandata on your computer. Scan a QR code to install.">
+<meta name="description" content="Mandata on iPhone and Android: your tasks, deadlines and Ask Mandata on your phone, from Mandata on your computer. Scan the QR code in Mandata to install.">
 <link rel="icon" href="assets/icon.png">
 <link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,32 +35,25 @@
 <section class="band after-hero">
   <div class="wrap stack" style="gap:48px">
     <div class="ph-cards">
-      <article class="ph-card" id="iphone">
-        <div class="ph-qr"><img src="assets/qr-iphone.svg" alt="QR code for the iPhone steps" width="190" height="190"></div>
+      <article class="ph-card" id="pair">
         <div class="stack" style="gap:12px">
-          <span class="eyebrow">iPhone and iPad</span>
-          <h2>Scan with the Camera</h2>
-          <p class="fine">Opens these steps on the iPhone. Mandata installs on the Home Screen from Safari: nothing to download from the App Store.</p>
+          <span class="eyebrow">iPhone and Android</span>
+          <h2>Scan the QR code on your computer</h2>
           <ol class="ph-steps">
             <li>On your computer, open Mandata, <b>Settings &gt; Phone</b>, and switch phone access on.</li>
-            <li>Scan the QR code it shows with the iPhone's <b>Camera</b>, and open it in Safari. The iPhone is paired.</li>
-            <li>Tap <b>Share</b> <svg class="ph-share" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="(the square with an arrow)"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>, then <b>Add to Home Screen</b>. Mandata now opens full screen from its own icon.</li>
+            <li>Scan the QR code it shows with the phone's camera.</li>
+            <li>With the Mandata app installed, it opens in the app, paired. Without it, Mandata opens in the phone's browser, paired: install the app from there (Android), or tap Share and <b>Add to Home Screen</b> (iPhone).</li>
           </ol>
         </div>
       </article>
 
       <article class="ph-card" id="android">
-        <div class="ph-qr"><img src="assets/qr-android.svg" alt="QR code to download the Android app" width="190" height="190"></div>
         <div class="stack" style="gap:12px">
           <span class="eyebrow">Android</span>
-          <h2>Scan to install the app</h2>
-          <p class="fine">Downloads <code>Mandata-Android.apk</code>, the Mandata app for Android 7 and later, built and signed on GitHub from this repository.</p>
+          <h2>The Mandata app</h2>
+          <p class="fine">For Android 7 and later, built and signed on GitHub from this repository. With it, the QR code on your computer opens straight in the app.</p>
           <a class="btn btn-primary ph-dl" href="downloads/Mandata-Android.apk">Download the Android app</a>
-          <ol class="ph-steps">
-            <li>Open the downloaded file and tap <b>Install</b>. The first time, Android asks to allow installs from your browser: <b>Settings</b>, turn on <b>Allow from this source</b>, go back.</li>
-            <li>On your computer, open Mandata, <b>Settings &gt; Phone</b>, and switch phone access on.</li>
-            <li>Open the Mandata app and tap <b>Scan QR code</b>, then point the phone at the computer's QR code. Or choose <b>Android app</b> above the QR code and scan it with the camera: it opens straight in the app.</li>
-          </ol>
+          <p class="fine">Open the downloaded file and tap <b>Install</b>. The first time, Android asks to allow installs from your browser: <b>Settings</b>, turn on <b>Allow from this source</b>, go back.</p>
         </div>
       </article>
     </div>
@@ -74,7 +67,7 @@
       <ol class="steps">
         <li><h3>Mandata runs on your computer</h3><p>As it does now: it reads Outlook or Microsoft 365, finds the tasks and keeps the profiles. <a href="download.html">Install it first</a> if you have not.</p></li>
         <li><h3>Phone access is on</h3><p>Off until you switch it on in <b>Settings &gt; Phone</b>. Then Mandata also answers on the Wi-Fi, to paired phones only.</p></li>
-        <li><h3>The phone is paired once</h3><p>With the QR code, or the 8-letter code under it. Each phone gets a key of its own; sign any of them out in Settings &gt; Phone.</p></li>
+        <li><h3>The phone is paired once</h3><p>With the QR code in Settings &gt; Phone, or the 8-letter code under it. Each phone gets a key of its own; sign any of them out in Settings &gt; Phone.</p></li>
       </ol>
     </div>
 
@@ -125,7 +118,7 @@
 (() => {
   const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   const first = ios ? 'iphone' : /Android/.test(ua) ? 'android' : '';
-  if (first) { const c = document.getElementById(first); c.parentNode.prepend(c); c.classList.add('ph-mine'); }
+  if (first === 'android') document.getElementById('android').classList.add('ph-mine');
 })();
 </script>
 </body>

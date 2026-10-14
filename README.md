@@ -49,14 +49,15 @@ at Microsoft's sign-in page. Needs macOS 12 or later, or a 64-bit Linux desktop.
 
 ### iPhone and Android
 
-[shamoug.github.io/mandata/phone.html](https://shamoug.github.io/mandata/phone.html) has a QR code for each. The phone
-reaches Mandata on your computer over the Wi-Fi, once phone access is on in Mandata's **Settings > Phone** and the phone
-is paired with the QR code shown there; your mail and the AI stay on the computer.
+The phone reaches Mandata on your computer over the Wi-Fi once phone access is on in Mandata's **Settings > Phone**;
+scan the QR code shown there (pick iPhone or Android above it). Your mail and the AI stay on the computer.
 
-- **iPhone:** scan the computer's QR code with the Camera, open it in Safari, then Share > **Add to Home Screen**.
-- **Android:** install [Mandata-Android.apk](https://shamoug.github.io/mandata/downloads/Mandata-Android.apk) (allow
-  installs from your browser when asked), open it and tap **Scan QR code**. Or pick **Android app** above the QR code in
-  Settings > Phone and scan it with the camera: its `mandata://` link opens straight in the app.
+- **Android:** the code opens `open.html` on this site, which Android hands to the Mandata app when it is installed (an
+  App Link, verified by `assetlinks.json` in the [shamoug.github.io](https://github.com/shamoug/shamoug.github.io)
+  repository). Without the app, the page sends the phone to Mandata's phone version in Chrome, paired, where **Install
+  the app** downloads [Mandata-Android.apk](https://shamoug.github.io/mandata/downloads/Mandata-Android.apk).
+- **iPhone:** the code opens Mandata in Safari, paired; then Share > **Add to Home Screen**.
+- [phone.html](https://shamoug.github.io/mandata/phone.html) explains it and has the Android download.
 
 ## This repository
 
@@ -69,8 +70,8 @@ the Android app (`android/`, copied from the app's `installerandroid`).
 [.github/workflows/android.yml](.github/workflows/android.yml) builds `android/` whenever it changes (or from the
 Actions tab), signs it with the key in the repository secrets `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PASSWORD`,
 checks the signature and commits it as `downloads/Mandata-Android.apk`. Keep that key: an app signed with another one
-cannot install over the last. The QR codes on `phone.html` (`assets/qr-*.svg`) are drawn by the app's
-`tools/make-phone-qr.mjs`.
+cannot install over the last. The App Link's fingerprint (`.well-known/assetlinks.json` in the
+shamoug.github.io repository) is that key's SHA-256: a new key needs a new fingerprint there.
 
 ### Releasing
 

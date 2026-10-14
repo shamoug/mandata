@@ -106,8 +106,17 @@ public class MainActivity extends Activity {
             .addOnFailureListener(e -> Toast.makeText(this, "The scanner is not available on this phone: type the address and code instead.", Toast.LENGTH_LONG).show());
     }
 
-    /** A link from a pairing QR code: mandata://192.168.1.20:4321/pair?code=ABCD2345 opens the computer and pairs. */
+    /**
+     * A pairing link opens the computer and pairs: the QR code's https://shamoug.github.io/mandata/open.html#192.168.1.20:4321:ABCD2345,
+     * or mandata://192.168.1.20:4321/pair?code=ABCD2345 from the phone version's "Open in the Mandata app".
+     */
     private boolean open(Uri u) {
+        if (u != null && "https".equals(u.getScheme()) && "shamoug.github.io".equals(u.getHost()) && u.getFragment() != null) {
+            String[] p = u.getFragment().split(":");
+            if (p.length != 3 || !p[0].matches("[A-Za-z0-9.-]+") || !p[1].matches("[0-9]{1,5}") || !p[2].matches("[A-Za-z0-9]{4,12}")) return false;
+            web.loadUrl("http://" + p[0] + ":" + p[1] + "/#pair=" + p[2]);
+            return true;
+        }
         if (u == null || !"mandata".equals(u.getScheme()) || u.getHost() == null) return false;
         String code = u.getQueryParameter("code");
         web.loadUrl("http://" + u.getAuthority() + "/" + (code != null ? "#pair=" + Uri.encode(code) : "#/home"));
