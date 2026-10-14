@@ -38,7 +38,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - name: Get the app files from the release
@@ -194,7 +194,7 @@ jobs:
       matrix:
         os: [macos-14, ubuntu-24.04]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Libraries (Linux)
         if: runner.os == 'Linux'
         run: |
