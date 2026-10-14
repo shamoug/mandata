@@ -27,6 +27,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  tests:
+    name: Tests on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04, windows-2022]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Get the app files from the release
+        run: |
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in
+          mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+      - name: npm test
+        working-directory: app
+        run: npm test
+
   mac:
     name: macOS ${{ matrix.arch }}
     runs-on: macos-14   # Apple silicon; the Intel build is made here too, and only the native one is started
@@ -106,6 +128,62 @@ jobs:
           sha256sum * > ../SHA256SUMS.txt
           cat ../SHA256SUMS.txt
           gh release upload "$TAG" ../SHA256SUMS.txt -R "$GITHUB_REPOSITORY" --clobber
+
+  # The local AI end to end on each system, as users get it: Ollama installed the usual way there, Mandata started,
+  # and the app must bring the AI server up (or find it), download the model itself and read a sample email with it.
+  # A small model keeps it quick; the code path is the same for every model.
+  ai:
+    name: AI on ${{ matrix.os }}
+    needs: [mac, linux]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04, windows-2022]
+    env:
+      AI_MODEL: qwen3:0.6b
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Get the app files from the release
+        run: |
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-app.tar.gz -D in
+          mkdir app && tar -xzf in/Mandata-app.tar.gz -C app
+          echo "VERSION=$(sed -n 's/^ *"version": *"\([^"]*\)".*/\1/p' app/package.json | head -n1)" >> "$GITHUB_ENV"
+      - name: macOS - Ollama.app in Applications, not running (Mandata starts its server)
+        if: runner.os == 'macOS'
+        run: |
+          curl -fsSL -o Ollama.zip https://ollama.com/download/Ollama-darwin.zip
+          ditto -x -k Ollama.zip /Applications
+          test -x /Applications/Ollama.app/Contents/Resources/ollama
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-mac-arm64.zip -D pkg
+          ditto -x -k pkg/Mandata-mac-arm64.zip pkg
+          echo "START=pkg/Mandata.app/Contents/MacOS/Mandata" >> "$GITHUB_ENV"
+      - name: Linux - Ollama from its own installer (a system service)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq --no-install-recommends xvfb xauth libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libnotify4 zstd
+          curl -fsSL https://ollama.com/install.sh | sh
+          gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p Mandata-linux-x64.tar.gz -D pkg
+          tar -xzf pkg/Mandata-linux-x64.tar.gz -C pkg
+          echo "START=xvfb-run -a" >> "$GITHUB_ENV"
+          echo "APP=pkg/Mandata/mandata" >> "$GITHUB_ENV"
+      - name: Windows - Mandata and the AI with the setup users run
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          gh release download $env:TAG -R $env:GITHUB_REPOSITORY -p Mandata-Installer.zip -D pkg
+          Expand-Archive pkg/Mandata-Installer.zip -DestinationPath setup
+          powershell -NoProfile -ExecutionPolicy Bypass -File setup/scripts/install.ps1 -AI yes -Model $env:AI_MODEL -NoLaunch -NoDesktopIcon
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          "START=$env:LOCALAPPDATA\Programs\Mandata\Mandata.exe" -replace '\\', '/' | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+      - name: Start Mandata and use its AI
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then $START bash app/installer/unix/smoke.sh "$VERSION" "$APP"
+          else bash app/installer/unix/smoke.sh "$VERSION" "$START"; fi
 
   install-script:
     name: install.sh on ${{ matrix.os }}
