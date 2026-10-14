@@ -69,7 +69,8 @@ the Android app (`android/`, copied from the app's `installerandroid`).
 
 [.github/workflows/android.yml](.github/workflows/android.yml) builds `android/` whenever it changes (or from the
 Actions tab), signs it with the key in the repository secrets `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PASSWORD`,
-checks the signature and commits it as `downloads/Mandata-Android.apk`. Keep that key: an app signed with another one
+checks the signature and commits it as `downloads/Mandata-Android.apk`, with `downloads/android.json` (its version and
+SHA-256), from which the installed apps update themselves. Keep that key: an app signed with another one
 cannot install over the last. The App Link's fingerprint (`.well-known/assetlinks.json` in the
 shamoug.github.io repository) is that key's SHA-256: a new key needs a new fingerprint there.
 

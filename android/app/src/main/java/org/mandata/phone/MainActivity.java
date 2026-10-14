@@ -4,12 +4,15 @@
 // website, mail links) opens in the phone's own apps. No data is kept here but the address and the pairing cookie.
 package org.mandata.phone;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
@@ -78,8 +81,14 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Notifications from the computer, in the background; and a look for a new version of the app.
+        Notices.schedule(this);
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 1);
+        new Thread(() -> { try { Updater.checkIfDue(getApplicationContext()); } catch (Exception e) { /* next time */ } }).start();
+
         if (state != null) web.restoreState(state);
-        else if (!open(getIntent().getData())) {
+        else if (!openNotice(getIntent()) && !open(getIntent().getData())) {
             String server = prefs.getString("server", null);
             web.loadUrl(server != null ? server + "#/home" : START);
         }
@@ -106,6 +115,14 @@ public class MainActivity extends Activity {
             .addOnFailureListener(e -> Toast.makeText(this, "The scanner is not available on this phone: type the address and code instead.", Toast.LENGTH_LONG).show());
     }
 
+    /** A tapped notification opens the page it is about, on the computer the app is paired with. */
+    private boolean openNotice(Intent i) {
+        String url = i == null ? null : i.getStringExtra("url");
+        if (url == null || !url.startsWith("http://")) return false;
+        web.loadUrl(url);
+        return true;
+    }
+
     /**
      * A pairing link opens the computer and pairs: the QR code's https://shamoug.github.io/mandata/open.html#192.168.1.20:4321:ABCD2345,
      * or mandata://192.168.1.20:4321/pair?code=ABCD2345 from the phone version's "Open in the Mandata app".
@@ -127,7 +144,7 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        open(intent.getData());
+        if (!openNotice(intent)) open(intent.getData());
     }
 
     @Override

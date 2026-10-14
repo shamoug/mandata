@@ -1,7 +1,8 @@
 # Builds Mandata for Android (android/, copied from the app's installer\android) whenever it changes, signs it with
 # the key in the repository's secrets (ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD), checks the signature, and
 # publishes it on the website as downloads/Mandata-Android.apk: the file the phone page's QR code downloads.
-# The same key signs every build, so a new version installs over the old one.
+# The same key signs every build, so a new version installs over the old one; downloads/android.json tells the
+# installed apps that it is there, and they update themselves.
 name: Android app
 
 on:
@@ -58,9 +59,13 @@ jobs:
       - name: Publish on the website
         run: |
           cp android/app/build/outputs/apk/release/app-release.apk downloads/Mandata-Android.apk
+          # What the app looks at to update itself (Updater.java): the newest version, its file and its SHA-256.
+          SHA=$(sha256sum downloads/Mandata-Android.apk | cut -d' ' -f1)
+          printf '{"versionCode": %s, "versionName": "%s", "url": "https://shamoug.github.io/mandata/downloads/Mandata-Android.apk", "sha256": "%s"}\n' "$VERSION_CODE" "$VERSION_NAME" "$SHA" > downloads/android.json
+          cat downloads/android.json
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add downloads/Mandata-Android.apk
+          git add downloads/Mandata-Android.apk downloads/android.json
           git commit -m "Android app $VERSION_NAME"
           git pull --rebase origin main
           git push origin HEAD:main
