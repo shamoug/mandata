@@ -15,7 +15,7 @@ android {
         minSdk 24
         // 34: the window keeps the system bars of its own, so the page needs no insets of them.
         targetSdk 34
-        versionCode (env.VERSION_CODE ?: '1') as int
+        versionCode Integer.parseInt(env.VERSION_CODE ?: '1')
         versionName env.VERSION_NAME ?: '1.0.0'
     }
 
