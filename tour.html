@@ -85,8 +85,10 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.02em;
 .wbar .tool.fsl:hover{background:var(--teal-soft);color:var(--teal)}
 .wbar .tool.fsl svg{width:15px;height:15px}
 /* Like a video player: a full-screen button at the bottom right of the screen. */
-.fsfab{position:absolute;right:12px;bottom:12px;z-index:6;display:flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:8px 12px;background:rgba(18,32,51,.82);color:#fff;font:600 .82rem var(--font-body);cursor:pointer;box-shadow:0 6px 18px -6px rgba(0,0,0,.45);opacity:.85;transition:opacity .2s,transform .2s}
-.fsfab:hover,.fsfab:focus-visible{opacity:1;transform:scale(1.04)}
+.fsfab{position:absolute;right:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:7px;background:rgba(18,32,51,.78);color:#fff;font:600 .82rem var(--font-body);cursor:pointer;box-shadow:0 6px 18px -6px rgba(0,0,0,.45);opacity:.8;transition:opacity .2s}
+.fsfab span{display:none}
+.fsfab:hover span,.fsfab:focus-visible span{display:inline;padding-right:4px}
+.fsfab:hover,.fsfab:focus-visible{opacity:1}
 .fsfab svg{width:18px;height:18px}
 .window.isfs .fsfab{display:none}
 @media (max-width:600px){.fsfab span,.wbar .tool.fsl span{display:none}.fsfab{padding:8px}}
@@ -153,8 +155,12 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.02em;
 .thumb.done{opacity:.68}
 
 /* Explanation panel */
-.panel{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:22px;position:sticky;top:74px;max-height:calc(100vh - 88px);overflow:auto}
-@media (max-width:1180px){.panel{position:static;max-height:none}}
+/* One fixed height for every step: the text scrolls inside if it is ever longer, the action and buttons stay docked at the bottom. */
+.panel{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:0;position:sticky;top:74px;height:min(660px,calc(100vh - 88px));min-height:500px;display:flex;flex-direction:column;overflow:hidden}
+.pbody{flex:1;min-height:0;overflow:auto;padding:22px 22px 8px;scrollbar-width:thin}
+.pfoot{flex:none;padding:14px 22px 14px;border-top:1px solid var(--line)}
+.pfoot .action{margin-top:0}
+@media (max-width:1180px){.panel{position:static;height:600px;min-height:0}}
 .kick{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:10px}
 .kick b{color:var(--teal);font:600 .74rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
 .speaker{display:inline-flex;align-items:center;gap:7px;font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:999px;margin-bottom:10px;background:var(--tint);border:1px solid var(--line);color:var(--muted)}
@@ -291,7 +297,8 @@ dialog img{display:block;max-width:none}
         </div>
       </div>
 
-      <aside class="panel" aria-live="polite">
+      <aside class="panel">
+        <div class="pbody" id="pbody" aria-live="polite">
         <div class="kick"><b id="kChap"></b><span id="kStep"></span></div>
         <div class="speaker" id="speaker" data-g="female"></div>
         <h2 id="title"></h2>
@@ -300,12 +307,16 @@ dialog img{display:block;max-width:none}
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How to use it</h3>
           <p id="how"></p>
         </div>
+        </div>
+        <!-- Docked at the bottom: the buttons stay in the same place on every step. -->
+        <div class="pfoot">
         <div class="action" id="action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 2.5 20 12l-7.2 1.6L9.6 21z"/></svg><span id="actionText"></span></div>
         <div class="navrow">
           <button class="btn" id="prev">Back</button>
           <button class="btn teal" id="next">Next</button>
         </div>
         <div class="hint">Arrow keys move between steps. The highlighted spot does the click.</div>
+        </div>
       </aside>
     </section>
   </div>
@@ -554,6 +565,7 @@ function go(k){
   $("#lead").textContent=s.lead;
   $("#how").textContent=s.how;
   $("#actionText").textContent=s.action;
+  $("#pbody").scrollTop=0;
   $("#prev").disabled=i===0;
   $("#next").textContent=i===S.length-1?"Start again":"Next";
 
