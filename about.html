@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Mandata</title>
+<meta name="description" content="Why Mandata exists, where its name comes from, and how it keeps email on your own laptop.">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="mast">
+  <nav class="wrap" aria-label="Main">
+    <a class="logo" href="./"><img src="assets/icon.png" alt="">Mandata</a>
+    <a href="./#features">Features</a>
+    <a href="tour.html">Tour</a>
+    <a href="phone.html">Phone</a>
+    <a href="./#privacy">Privacy</a>
+    <a href="about.html" aria-current="page">About</a>
+    <a class="navcta" href="download.html">Download</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-copy">
+    <span class="eyebrow">About the name</span>
+    <div class="word">mand<span>ā</span>ta</div>
+    <p class="lede">Latin for "things entrusted": instructions given to someone to carry out.</p>
+    <div class="etym" aria-label="Etymology">
+      <span>manus <i>hand</i></span><span>+ dare <i>to give</i></span><span>→ mandare <i>to place in someone's hand</i></span><span>→ mandatum, pl. mandata</span>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap two">
+    <div class="prose">
+      <p>Every email that asks someone to do something hands them a <i>mandatum</i>. In a busy inbox those requests scatter across threads, folders and weeks, and the ones that matter most are often the ones nobody wrote down. Mandata finds each one and follows it to the end.</p>
+      <h2>Why it exists</h2>
+      <p>Task tools work only when someone types the task in. Most work in an office is asked for by email and never reaches a list. Mandata starts from the mail itself: it reads each thread whole, oldest message first, and keeps a running record of who owes what to whom.</p>
+      <p>It is built for organisations whose correspondence cannot be sent to an external AI service. The model runs on the laptop through Ollama. On Windows the app reads classic Outlook through its own local connection, and keeps working with the network cable removed; on macOS and Linux it fetches your mail from your own Microsoft 365 mailbox, and only the reading by the AI happens on the laptop.</p>
+      <h2>How it is built</h2>
+      <p>An Electron shell hosts a small Node.js server and a plain JavaScript interface, with no build step. Data lives in one relational SQLite file with enforced links and versioned upgrades, backed up before every upgrade. Every prompt the AI receives is visible and editable in Settings.</p>
+      <h2>History</h2>
+      <p>Version 1 was called Task Manager. Version 2.0 is the first under the name Mandata; installing it over version 1 updates it in place and keeps all its data. Version 2.2 brings Mandata to macOS and Linux, reading mail through Microsoft 365.</p>
+    </div>
+    <aside class="stack" style="gap:24px">
+      <div class="feat">
+        <h3>At a glance</h3>
+        <dl class="facts">
+          <dt>Version</dt><dd>2.8.0</dd>
+          <dt>Platform</dt><dd>Windows 10 / 11 with classic Outlook; macOS 12 and later, and Linux, with Microsoft 365</dd>
+          <dt>AI</dt><dd>Local, through Ollama; the model is picked for your hardware</dd>
+          <dt>Data</dt><dd>One SQLite file in your home folder</dd>
+          <dt>Install</dt><dd>Per user, no admin rights</dd>
+          <dt>Network</dt><dd>To install and download models; on macOS and Linux, to fetch your mail</dd>
+        </dl>
+      </div>
+      <a class="btn btn-primary" href="download.html" style="justify-content:center">Download Mandata</a>
+    </aside>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Mandata 2.7 · By Aladdin Shamoug</span>
+    <span><a href="./">Home</a> · <a href="download.html">Download</a> · <a href="https://github.com/shamoug/mandata/releases">Releases</a></span>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Opening Mandata</title>
+<link rel="icon" href="assets/icon.png">
+<style>
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f9fb;color:#33404f;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px;box-sizing:border-box;text-align:center}
+  main{max-width:380px}
+  img{width:72px;height:72px;border-radius:16px}
+  h1{font-size:22px;color:#122033;margin:14px 0 6px}
+  p{margin:0 0 12px;color:#5d6b7c}
+  a{color:#086c80}
+</style>
+</head>
+<body>
+<main>
+  <img src="assets/icon.png" alt="">
+  <h1>Opening Mandata</h1>
+  <p id="msg">Taking you to Mandata on your computer.</p>
+</main>
+<script>
+// The pairing QR code in Mandata's Settings > Phone opens this page: #<computer>:<port>:<code>. With the Android app
+// installed, the phone gives the link to the app instead (an App Link) and this page never shows. Otherwise it sends
+// the phone to Mandata's phone version on the computer, in the browser, which pairs with the code; the app can be
+// installed from there. The code never leaves the phone: it is after the #, which is not sent to this site.
+(() => {
+  const m = location.hash.slice(1).match(/^([A-Za-z0-9.-]+):(\d{1,5}):([A-Za-z0-9]{4,12})$/);
+  const msg = document.getElementById('msg');
+  if (!m) { msg.innerHTML = 'Scan the QR code in Mandata on your computer, <b>Settings &gt; Phone</b>. <a href="phone.html">About Mandata on your phone</a>'; return; }
+  const url = `http://${m[1]}:${m[2]}/#pair=${m[3]}`;
+  msg.innerHTML = `Taking you to Mandata on your computer. If nothing happens, <a href="${url}">tap here</a>. The phone must be on the same Wi-Fi as the computer.`;
+  location.replace(url);
+})();
+</script>
+</body>
+</html>

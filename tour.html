@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mandata: Guided Tour</title>
+<meta name="description" content="A narrated, step-by-step tour of Mandata on real screens: the tasks it finds in your email, follow-ups, Ask Mandata, settings and the phone app.">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* The guided tour. Same palette as the site (assets/site.css): teal paper plane, orange check, one light theme. */
+:root{
+  --bg:#ffffff; --wash:#f4f9fb; --wash2:#eaf5f8; --surface:#ffffff; --tint:#f3f6f9; --line:#e3e9ef; --line2:#d3dde6;
+  --ink:#122033; --body:#33404f; --muted:#5d6b7c;
+  --teal:#086c80; --teal-bright:#16a6bf; --teal-soft:#e4f5f8;
+  --check:#f5901f; --check-soft:#fff1e1; --check-ink:#9a4a00;
+  --shadow:0 1px 2px rgba(18,32,51,.05),0 18px 44px -18px rgba(18,32,51,.28);
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--body);font:400 16px/1.6 var(--font-body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+a{color:var(--teal);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.02em;margin:0}
+.wrap{max-width:1440px;margin:0 auto;padding:0 clamp(16px,2.4vw,28px)}
+
+/* Masthead */
+.mast{background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;backdrop-filter:saturate(1.4) blur(8px)}
+.mast .wrap{display:flex;align-items:center;gap:10px 14px;padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:700 1.2rem/1 var(--font-display)}
+.logo img{width:30px;height:30px;border-radius:8px}
+.mast .sub{font-size:.95rem;font-weight:500;color:var(--muted);padding-left:14px;border-left:1px solid var(--line)}
+.mast .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--surface);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:.9rem;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--check);border-color:var(--check);color:#2a1500}
+.btn.primary:hover{filter:brightness(1.04);background:var(--check)}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.teal:hover{background:#075a6b}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn svg{width:16px;height:16px;flex:none}
+@media (max-width:760px){.mast .sub{display:none}.mast .btn span.l{display:none}}
+
+/* Intro */
+.intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px;padding:36px 0 24px;align-items:end}
+.eyebrow{font:600 .74rem/1 var(--font-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--teal);display:block;margin-bottom:12px}
+.intro h1{font-size:clamp(2rem,4vw,3.2rem);line-height:1.04;font-weight:750;margin:0 0 14px;max-width:18ch;text-wrap:balance}
+.intro p{margin:0;color:var(--muted);font-size:1.06rem;max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.facts div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.facts b{display:block;font:700 1.6rem/1.1 var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.facts span{font-size:.8rem;color:var(--muted);line-height:1.3;display:block;margin-top:4px}
+@media (max-width:980px){.intro{grid-template-columns:1fr;gap:22px}}
+@media (max-width:560px){.facts{grid-template-columns:repeat(2,1fr)}}
+
+/* Chapters */
+.chapters{display:flex;gap:6px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:thin}
+.chap{flex:1 0 auto;min-width:112px;text-align:left;background:none;border:0;padding:0;cursor:pointer}
+.chap .track{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:8px}
+.chap .track i{display:block;height:100%;width:0;background:var(--teal-bright);transition:width .35s}
+.chap .nm{font-size:.82rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.chap .nm small{font:600 .74rem var(--font-mono);margin-right:6px}
+.chap[aria-current="true"] .nm{color:var(--ink)}
+
+/* Player */
+.player{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:22px;align-items:start;padding-bottom:40px}
+@media (max-width:1180px){.player{grid-template-columns:1fr}}
+.stagecol{min-width:0;width:80%;margin:0 auto}
+@media (max-width:760px){.stagecol{width:100%}}
+.window{background:var(--surface);border:1px solid var(--line2);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.wbar{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;background:var(--tint);border-bottom:1px solid var(--line)}
+.wbar img{width:16px;height:16px;border-radius:4px}
+.wbar .wt{flex:1;font-size:.82rem;font-weight:600;color:var(--muted);min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wbar .tool{border:0;background:none;padding:4px;cursor:pointer;color:var(--muted);border-radius:6px}
+.wbar .tool:hover{color:var(--ink);background:var(--line)}
+.wbar .tool svg{width:17px;height:17px;display:block}
+.wbar .tool.fsl{display:flex;align-items:center;gap:6px;font:600 .8rem var(--font-body);color:var(--teal);border:1px solid var(--line2);background:var(--surface);padding:4px 10px;border-radius:7px}
+.wbar .tool.fsl:hover{background:var(--teal-soft);color:var(--teal)}
+.wbar .tool.fsl svg{width:15px;height:15px}
+/* Like a video player: a full-screen button at the bottom right of the screen. */
+.fsfab{position:absolute;right:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:7px;background:rgba(18,32,51,.78);color:#fff;font:600 .82rem var(--font-body);cursor:pointer;box-shadow:0 6px 18px -6px rgba(0,0,0,.45);opacity:.8;transition:opacity .2s}
+.fsfab span{display:none}
+.fsfab:hover span,.fsfab:focus-visible span{display:inline;padding-right:4px}
+.fsfab:hover,.fsfab:focus-visible{opacity:1}
+.fsfab svg{width:18px;height:18px}
+.window.isfs .fsfab{display:none}
+@media (max-width:600px){.fsfab span,.wbar .tool.fsl span{display:none}.fsfab{padding:8px}}
+.viewport{position:relative;background:#eef2f5;overflow:hidden;aspect-ratio:1440/900}
+.viewport.phone{aspect-ratio:auto;height:min(62vh,608px);background:var(--wash);display:flex;align-items:center;justify-content:center}
+.screen{position:absolute;inset:0}
+.viewport.phone .screen{position:relative;inset:auto;height:calc(100% - 40px);aspect-ratio:390/844;border-radius:34px;box-shadow:0 0 0 9px #16202b,0 0 0 10px #3b4754,var(--shadow);overflow:hidden}
+.screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease}
+.screen img.on{opacity:1}
+.hot{position:absolute;border-radius:9px;cursor:pointer;background:transparent;border:0;padding:0;z-index:3}
+.hot::before{content:"";position:absolute;inset:-5px;border:2.5px solid var(--check);border-radius:10px;box-shadow:0 0 0 4px rgba(245,144,31,.22)}
+.hot::after{content:"";position:absolute;inset:-5px;border-radius:10px;border:2px solid var(--check);animation:ring 1.6s ease-out infinite}
+@keyframes ring{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.3)}}
+.hot[hidden]{display:none}
+.callout{position:absolute;z-index:4;background:var(--ink);color:#fff;font-size:.78rem;font-weight:600;padding:6px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);transition:opacity .25s;opacity:0}
+.cursor{position:absolute;z-index:5;width:26px;height:26px;margin:-3px 0 0 -5px;pointer-events:none;opacity:0;transition:left .9s cubic-bezier(.45,.05,.2,1),top .9s cubic-bezier(.45,.05,.2,1),opacity .2s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.ripple{position:absolute;z-index:4;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:rgba(245,144,31,.55);pointer-events:none;animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:scale(5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.hot::after,.ripple{animation:none}.cursor{transition:none}.screen img{transition:none}}
+
+/* Full screen, like a video player: the screen fills the display on black, controls fade in over it. */
+.window{position:relative}
+.fsui{display:none}
+.window.isfs{position:fixed;inset:0;z-index:1000;border:0;border-radius:0;box-shadow:none;background:#05090d;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.window.isfs .wbar{display:none}
+.window.isfs .callout{font-size:.95rem;padding:7px 12px}
+.window.isfs .viewport{width:min(100vw,160vh);background:#05090d}
+.window.isfs .viewport.phone{width:100vw;height:100vh;aspect-ratio:auto;align-items:flex-start;padding-top:26px}
+.window.isfs .viewport.phone .screen{height:calc(100vh - 190px)}
+.window.isfs .fsui{display:block;position:absolute;inset:0;pointer-events:none;z-index:10;color:#fff}
+.fstop{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:12px;padding:14px 18px 44px;background:linear-gradient(rgba(0,0,0,.7),transparent);font:600 1.05rem var(--font-display);pointer-events:auto;transition:opacity .35s}
+.fstop img{width:26px;height:26px;border-radius:7px}
+.fstop span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.fsbar{position:absolute;left:0;right:0;bottom:0;padding:46px 18px 12px;background:linear-gradient(transparent,rgba(0,0,0,.82));pointer-events:auto;transition:opacity .35s}
+.fsprog{display:flex;gap:3px;height:18px;align-items:center}
+.fsprog button{flex:1;height:4px;border:0;padding:0;border-radius:2px;background:rgba(255,255,255,.3);cursor:pointer;transition:height .15s}
+.fsprog button.done{background:var(--check)}
+.fsprog button.cur{background:#fff}
+.fsprog:hover button{height:8px}
+.fsrow{display:flex;align-items:center;gap:4px;margin-top:4px}
+.fsb{background:none;border:0;color:#fff;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none}
+.fsb:hover{background:rgba(255,255,255,.15)}
+.fsb:focus-visible{outline:2px solid #fff}
+.fsb svg{width:26px;height:26px}
+#fsVoice .off,#fsVoice.muted .on{display:none}
+#fsVoice.muted .off{display:inline}
+#fsCC{width:auto;padding:0 10px;border-radius:8px}
+#fsCC span{border:2px solid #fff;border-radius:4px;padding:0 5px;font:700 .8rem/1.5 var(--font-body)}
+#fsCC[aria-pressed="true"] span{background:#fff;color:#05090d}
+.fsstep{font-size:1rem;margin-left:8px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;opacity:.92}
+.fsrow .sp{flex:1}
+.fscap{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);width:max-content;max-width:min(940px,92vw);background:rgba(0,0,0,.8);color:#fff;font-size:clamp(1rem,1.8vw,1.45rem);line-height:1.45;padding:9px 18px;border-radius:8px;text-align:center;transition:bottom .35s}
+.fscap:empty,.window.nocap .fscap{display:none}
+.window.isfs.idle .fstop,.window.isfs.idle .fsbar{opacity:0;pointer-events:none}
+.window.isfs.idle .fscap{bottom:30px}
+.window.isfs.idle,.window.isfs.idle *{cursor:none!important}
+@media (max-width:600px){.fsstep{display:none}.fscap{bottom:104px}}
+.below{display:flex;align-items:center;gap:10px;margin-top:14px}
+.strip{display:flex;gap:6px;flex:1;min-width:0;overflow-x:auto;padding:4px 2px;scrollbar-width:thin}
+.thumb{flex:none;width:92px;border:2px solid var(--line);border-radius:8px;padding:0;background:var(--surface);cursor:pointer;overflow:hidden;position:relative}
+.thumb img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.thumb span{position:absolute;left:4px;top:4px;background:var(--ink);color:#fff;font:600 .66rem/1.5 var(--font-mono);padding:0 5px;border-radius:4px}
+.thumb[aria-current="step"]{border-color:var(--check)}
+.thumb.done{opacity:.68}
+
+/* Explanation panel */
+/* One fixed height for every step: the text scrolls inside if it is ever longer, the action and buttons stay docked at the bottom. */
+.panel{background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:0;position:sticky;top:74px;height:min(660px,calc(100vh - 88px));min-height:500px;display:flex;flex-direction:column;overflow:hidden}
+.pbody{flex:1;min-height:0;overflow:auto;padding:22px 22px 8px;scrollbar-width:thin}
+.pfoot{flex:none;padding:14px 22px 14px;border-top:1px solid var(--line)}
+.pfoot .action{margin-top:0}
+@media (max-width:1180px){.panel{position:static;height:600px;min-height:0}}
+.kick{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:10px}
+.kick b{color:var(--teal);font:600 .74rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+.speaker{display:inline-flex;align-items:center;gap:7px;font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:999px;margin-bottom:10px;background:var(--tint);border:1px solid var(--line);color:var(--muted)}
+.speaker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--check)}
+.speaker[data-g="male"]::before{background:var(--teal-bright)}
+.panel h2{font-size:1.5rem;line-height:1.15;margin:0 0 10px}
+.lead{font-size:1rem;margin:0 0 14px;color:var(--ink)}
+.sec{border-top:1px solid var(--line);padding-top:13px}
+.sec h3{font:600 .84rem var(--font-body);margin:0 0 6px;color:var(--ink);display:flex;align-items:center;gap:7px;letter-spacing:0}
+.sec h3 svg{width:15px;height:15px;color:var(--teal)}
+.sec p{margin:0;font-size:.93rem;color:var(--body)}
+.action{display:flex;gap:10px;align-items:flex-start;background:var(--check-soft);border:1px solid #f7d2a6;border-radius:10px;padding:11px 12px;margin-top:16px;font-size:.92rem;font-weight:600;color:var(--check-ink)}
+.action svg{width:18px;height:18px;flex:none;margin-top:2px}
+.navrow{display:flex;gap:8px;margin-top:16px}
+.navrow .btn{flex:1;justify-content:center;padding:10px 14px;font-size:.95rem}
+.hint{font-size:.76rem;color:var(--muted);margin-top:10px;text-align:center}
+
+/* Why Mandata */
+.why{border-top:1px solid var(--line);background:linear-gradient(180deg,var(--wash) 0,var(--bg) 100%);padding:44px 0 24px}
+.why h2{font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin:0 0 8px}
+.why .wrap > p{color:var(--muted);max-width:66ch;margin:0 0 24px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:18px}
+.card h3{font-size:1.05rem;margin:10px 0 6px}
+.card p{font-size:.9rem;color:var(--muted);margin:0}
+.card .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal);border:1px solid #c9e8ee}
+.card .ic svg{width:18px;height:18px}
+@media (max-width:980px){.cards{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.cards{grid-template-columns:1fr}}
+.kinds{margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kind{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px;font-size:.88rem;color:var(--muted)}
+.kind b{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:.95rem;margin-bottom:2px}
+.kind b i{width:10px;height:10px;border-radius:50%;display:inline-block}
+@media (max-width:980px){.kinds{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.kinds{grid-template-columns:1fr}}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:26px;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:18px 20px}
+.cta p{margin:0;flex:1;min-width:240px;color:var(--body)}
+footer{padding:22px 0 36px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);margin-top:30px}
+footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+dialog{border:1px solid var(--line2);padding:0;border-radius:12px;max-width:96vw;max-height:94vh;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,20,30,.72)}
+dialog .dh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line);font-weight:600;font-size:.9rem}
+dialog .db{overflow:auto;max-height:calc(94vh - 52px)}
+dialog img{display:block;max-width:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.vbody{padding:16px 18px 18px;width:min(560px,92vw)}
+.vmsg{margin:0 0 14px;font-weight:500;color:var(--teal);background:var(--teal-soft);border:1px solid #c9e8ee;padding:10px 12px;border-radius:9px;font-size:.9rem}
+.vrow{margin-bottom:14px}
+.vrow label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}
+.vrow em{font-style:normal;font-weight:500;font-size:.76rem;color:var(--muted);margin-left:6px}
+.vpick{display:flex;gap:8px}
+.vpick select{flex:1;min-width:0;font:inherit;font-size:.85rem;padding:8px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink)}
+.vrate{display:flex;align-items:center;gap:10px;font-size:.85rem}
+.vrate input{flex:1}
+.vnote{font-size:.8rem;color:var(--muted);margin:4px 0 0}
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <a class="logo" href="./"><img src="assets/icon.png" alt="">Mandata</a>
+    <span class="sub">Guided tour</span>
+    <div class="sp"></div>
+    <button class="btn" id="voiceBtn" aria-pressed="true" title="Turn the voice on or off">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="waveA" d="M15.5 8.5a5 5 0 0 1 0 7"/><path id="waveB" d="M19 5a10 10 0 0 1 0 14"/></svg>
+      <span class="l">Voice on</span>
+    </button>
+    <button class="btn" id="voiceSet" title="Choose the voices and the speed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="l">Voices</span></button>
+    <button class="btn teal" id="playBtn" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="playIc" d="M7 4v16l13-8z"/></svg>
+      <span>Play narrated tour</span>
+    </button>
+    <button class="btn" id="fsBtn" title="Watch the narrated tour full screen, like a video (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span class="l">Watch full screen</span></button>
+    <a class="btn primary" href="download.html"><span>Download</span></a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="intro">
+      <div>
+        <span class="eyebrow">Guided tour · about 12 minutes with the voice on</span>
+        <h1>Mandata, one click at a time, on the real screens.</h1>
+        <p>Mandata finds the tasks in your Outlook email, follows each one to the email that closes it, and keeps a profile of everyone you work with. Press <b>Play narrated tour</b> and a woman and a man take turns explaining each screen. Or go at your own pace: click the highlighted spot, or use the arrow keys. To watch it like a video, press <b>Watch full screen</b> or the F key.</p>
+      </div>
+      <div class="facts" aria-label="Mandata at a glance">
+        <div><b>0</b><span>tasks typed by hand: they all come from email</span></div>
+        <div><b>4</b><span>kinds of task, from yours to others'</span></div>
+        <div><b>0</b><span>emails sent until you press Send</span></div>
+        <div><b>100%</b><span>of the AI runs on your own computer</span></div>
+      </div>
+    </section>
+
+    <nav class="chapters" id="chapters" aria-label="Tour chapters"></nav>
+
+    <section class="player" aria-label="Tour">
+      <div class="stagecol">
+        <div class="window" id="stage">
+          <div class="wbar">
+            <img src="assets/icon.png" alt="">
+            <span class="wt" id="wtitle">Mandata</span>
+            <button class="tool" id="zoomBtn" title="See this screen at full size"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg><span class="sr">See full size</span></button>
+            <button class="tool fsl" id="fsTool" title="Full screen (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Full screen</span></button>
+          </div>
+          <div class="viewport" id="viewport">
+            <div class="screen" id="screen"></div>
+            <button class="hot" id="hot" aria-label="Do the highlighted click"></button>
+            <div class="callout" id="callout"></div>
+            <button class="fsfab" id="fsFab" title="Full screen (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Full screen</span></button>
+            <svg class="cursor" id="cursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2.5 20 12l-7.2 1.6L9.6 21z" fill="#fff" stroke="#122033" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+          <!-- Full screen: a video player's controls over the screen, hidden while it plays and the mouse rests. -->
+          <div class="fsui" id="fsui">
+            <div class="fstop"><img src="assets/icon.png" alt=""><span id="fsTitle"></span><button class="fsb" id="fsClose" title="Exit full screen (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg><span class="sr">Exit full screen</span></button></div>
+            <div class="fscap" id="fsCap" aria-live="polite"></div>
+            <div class="fsbar">
+              <div class="fsprog" id="fsProg" aria-label="Steps"></div>
+              <div class="fsrow">
+                <button class="fsb" id="fsPlay" title="Play (Space)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="fsPlayIc" d="M7 4v16l13-8z"/></svg><span class="sr">Play or pause</span></button>
+                <button class="fsb" id="fsPrev" title="Previous step (Left arrow)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg><span class="sr">Previous step</span></button>
+                <button class="fsb" id="fsNext" title="Next step (Right arrow)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg><span class="sr">Next step</span></button>
+                <button class="fsb" id="fsVoice" title="Voice on or off (M)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor"/><path class="on" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="off" d="m16 9 6 6m0-6-6 6"/></svg><span class="sr">Voice</span></button>
+                <span class="fsstep" id="fsStep"></span>
+                <span class="sp"></span>
+                <button class="fsb" id="fsCC" aria-pressed="true" title="Captions (C)"><span>CC</span></button>
+                <button class="fsb" id="fsExit" title="Exit full screen (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg><span class="sr">Exit full screen</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="below">
+          <div class="strip" id="strip" aria-label="Steps in this chapter"></div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="pbody" id="pbody" aria-live="polite">
+        <div class="kick"><b id="kChap"></b><span id="kStep"></span></div>
+        <div class="speaker" id="speaker" data-g="female"></div>
+        <h2 id="title"></h2>
+        <p class="lead" id="lead"></p>
+        <div class="sec">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How to use it</h3>
+          <p id="how"></p>
+        </div>
+        </div>
+        <!-- Docked at the bottom: the buttons stay in the same place on every step. -->
+        <div class="pfoot">
+        <div class="action" id="action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 2.5 20 12l-7.2 1.6L9.6 21z"/></svg><span id="actionText"></span></div>
+        <div class="navrow">
+          <button class="btn" id="prev">Back</button>
+          <button class="btn teal" id="next">Next</button>
+        </div>
+        <div class="hint">Arrow keys move between steps. The highlighted spot does the click.</div>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <section class="why">
+    <div class="wrap">
+      <h2>Why Mandata works the way it does</h2>
+      <p>Four rules sit behind every screen in the tour. They are why you can trust the list without checking your inbox again.</p>
+      <div class="cards">
+        <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg></span><h3>Tasks come from email</h3><p>Nobody types tasks in. Each one is read from the email that asked for it and closes when the email that settles it arrives.</p></div>
+        <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><h3>Deadlines are never guessed</h3><p>A task has a deadline only when an email sets one, quoted word for word, or when you set it yourself.</p></div>
+        <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg></span><h3>Nothing is sent without you</h3><p>The AI drafts follow-ups and forwards, but an email leaves only when you press Send and confirm.</p></div>
+        <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><h3>Private by design</h3><p>The AI runs on your own computer through Ollama. Your email and your tasks never leave it.</p></div>
+      </div>
+      <div class="kinds" aria-label="The four kinds of task">
+        <div class="kind"><b><i style="background:#c27c2c"></i>Assigned to me</b>Someone asked you, or you set it yourself.</div>
+        <div class="kind"><b><i style="background:#5c8a1f"></i>Among others</b>You are one of several people asked.</div>
+        <div class="kind"><b><i style="background:#3b5bdb"></i>I assigned</b>You asked someone else, and Mandata watches for the answer.</div>
+        <div class="kind"><b><i style="background:#2b8a7e"></i>Between others</b>Work between colleagues that you were copied on.</div>
+      </div>
+      <div class="cta">
+        <p><b>Ready to try it on your own mail?</b> Mandata is free, installs for your user account in about two minutes, and needs no admin rights.</p>
+        <a class="btn primary" href="download.html">Download Mandata</a>
+        <a class="btn" href="./">Back to the home page</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Screens from Mandata 2.6, running on made-up data: the people, the organisations and the emails are invented.</span>
+    <span>By Aladdin Shamoug · <a href="https://github.com/shamoug/mandata/releases">Releases</a></span>
+  </div>
+</footer>
+
+<dialog id="voiceDlg" aria-label="Voice settings">
+  <div class="dh"><span>Voices</span><button class="btn" id="voiceClose">Close</button></div>
+  <div class="vbody">
+    <p class="vmsg" id="vMsg"></p>
+    <div class="vrow"><label for="vs-female">Woman&rsquo;s voice <em id="vq-female"></em></label><div class="vpick"><select id="vs-female"></select><button class="btn" id="vt-female">Test</button></div></div>
+    <div class="vrow"><label for="vs-male">Man&rsquo;s voice <em id="vq-male"></em></label><div class="vpick"><select id="vs-male"></select><button class="btn" id="vt-male">Test</button></div></div>
+    <div class="vrow"><label for="vRate">Speed</label><div class="vrate"><span>Slower</span><input type="range" id="vRate" min="0.8" max="1.3" step="0.05" value="1"><span>Faster</span></div></div>
+    <p class="vnote">The tour alternates between a woman&rsquo;s voice and a man&rsquo;s voice at each step. Microsoft Edge has natural English voices such as Aria, Guy, Emma and Andrew. Chrome offers the Google voices. Safari uses the voices of your Mac or iPhone.</p>
+  </div>
+</dialog>
+<dialog id="zoomDlg" aria-label="Full size screen">
+  <div class="dh"><span id="zoomTitle"></span><button class="btn" id="zoomClose">Close</button></div>
+  <div class="db"><img id="zoomImg" alt=""></div>
+</dialog>
+
+<script>
+const IMG = {"01": "tour/01.webp", "02": "tour/02.webp", "03": "tour/03.webp", "04": "tour/04.webp", "05": "tour/05.webp", "06": "tour/06.webp", "07": "tour/07.webp", "08": "tour/08.webp", "09": "tour/09.webp", "10": "tour/10.webp", "11": "tour/11.webp", "12": "tour/12.webp", "13": "tour/13.webp", "14": "tour/14.webp", "15": "tour/15.webp", "16": "tour/16.webp", "17": "tour/17.webp", "18": "tour/18.webp", "19": "tour/19.webp", "20": "tour/20.webp", "21": "tour/21.webp", "22": "tour/22.webp", "23": "tour/23.webp", "24": "tour/24.webp", "25": "tour/25.webp", "26": "tour/26.webp", "27": "tour/27.webp", "28": "tour/28.webp", "29": "tour/29.webp", "30": "tour/30.webp", "31": "tour/31.webp", "32": "tour/32.webp"};
+const THUMB = {"01": "tour/01-t.webp", "02": "tour/02-t.webp", "03": "tour/03-t.webp", "04": "tour/04-t.webp", "05": "tour/05-t.webp", "06": "tour/06-t.webp", "07": "tour/07-t.webp", "08": "tour/08-t.webp", "09": "tour/09-t.webp", "10": "tour/10-t.webp", "11": "tour/11-t.webp", "12": "tour/12-t.webp", "13": "tour/13-t.webp", "14": "tour/14-t.webp", "15": "tour/15-t.webp", "16": "tour/16-t.webp", "17": "tour/17-t.webp", "18": "tour/18-t.webp", "19": "tour/19-t.webp", "20": "tour/20-t.webp", "21": "tour/21-t.webp", "22": "tour/22-t.webp", "23": "tour/23-t.webp", "24": "tour/24-t.webp", "25": "tour/25-t.webp", "26": "tour/26-t.webp", "27": "tour/27-t.webp", "28": "tour/28-t.webp", "29": "tour/29-t.webp", "30": "tour/30-t.webp", "31": "tour/31-t.webp", "32": "tour/32-t.webp"};
+const BOXES = {"01": [303, 13, 78, 29], "02": [22, 197, 339, 215], "03": [993, 203, 82, 36], "04": [1076, 203, 117, 36], "05": [1033, 815, 36, 34], "06": [1195, 203, 99, 36], "07": [1158, 816, 95, 32], "08": [883, 165, 30, 30], "09": [22, 172, 1387, 49], "10": [1083, 137, 30, 30], "11": [912, 256, 133, 32], "12": [1083, 157, 30, 30], "13": [625, 13, 109, 29], "14": [22, 142, 268, 249], "15": [1294, 752, 138, 38], "16": [20, 197, 239, 18], "17": [740, 13, 90, 29], "18": [836, 13, 90, 29], "19": [1322, 13, 30, 30], "20": [1197, 13, 81, 30], "21": [1163, 58, 30, 30], "22": [403, 260, 70, 29], "23": [941, 714, 94, 29], "24": [1041, 716, 72, 29], "25": [852, 716, 82, 29], "26": [363, 356, 186, 186], "27": [78, 785, 78, 59], "28": [14, 671, 362, 105], "29": [156, 785, 78, 59], "30": null, "31": [13, 11, 113, 34], "32": null};
+</script>
+<script>
+(function(){
+"use strict";
+const CHAPTERS=["Your day","Your tasks","Follow up","Teach the AI","Threads and people","Ask Mandata","The bigger picture","Settings","On your phone","Make it yours"];
+
+/* Each step: img, chapter, title, lead, how, action, callout. Phone steps are 390x844, the rest 1440x900. */
+const S=[
+{img:"01",ch:0,title:"Welcome to Mandata",lead:"This is the Overview, the first screen you see. Mandata has read your Outlook email and found every task in it, so nobody had to type one in.",
+ how:"The greeting says how many tasks are open, how many are overdue, and how many fall due in the next three days. The figures below break them down, and the panels show who is waiting on whom. At the top right, two green lights confirm that Outlook is connected and the AI is ready. The AI runs on your own computer, so your email never leaves it.",
+ action:"Click Tasks in the top bar.",callout:"Tasks"},
+
+{img:"02",ch:1,title:"Every task in one list",lead:"The Tasks page shows each task as a card, grouped by urgency: overdue first, then today and tomorrow, then the rest of the week.",
+ how:"Each card says what is asked, who asked whom, and how much time is left. The label at the top gives the kind of task: assigned to me, among others, I assigned, or between others. Use the filters to narrow the list, or switch on My open tasks to see only what is yours.",
+ action:"Open the overdue task: Send the final Q3 donor report.",callout:"Open the task"},
+{img:"03",ch:1,title:"Everything about one task",lead:"A panel opens on the right with the whole story of the task.",
+ how:"The Overview tab sums up the thread, shows who asked whom, and gives the deadline with the exact words of the email that set it. Mandata never guesses a deadline: when no email sets one, the task has none. Where it stands gives the latest news.",
+ action:"Click Thread.",callout:"Thread"},
+{img:"04",ch:1,title:"The emails behind the task",lead:"The Thread tab draws the conversation as a line, from the email that asked to today.",
+ how:"Each dot is an email: filled dots came from others, hollow ones you sent. The red flag marks the deadline, and the dotted red line shows how late the task is. Every email of the thread is listed below, ready to open.",
+ action:"Click Timeline.",callout:"Timeline"},
+{img:"05",ch:1,title:"What happened, and when",lead:"The Timeline lists every event of the task, in order.",
+ how:"You see when it was asked, where the deadline came from, and each reply that moved it on. When a new email arrives in the thread, Mandata reads it and adds the news here by itself.",
+ action:"Click the arrow next to Close as done.",callout:"More ways to close"},
+{img:"06",ch:1,title:"Close a task your way",lead:"Most tasks close by themselves when an email says the work is done. You can also close one yourself.",
+ how:"Close as done when it is delivered. Archive it when there is nothing for you to do, delegated when you handed it on, cancelled when it is no longer needed, or not a task when the AI misread the email. Park, next to it, sets a task aside and brings it back later.",
+ action:"Click Follow-up.",callout:"Follow-up"},
+
+{img:"07",ch:2,title:"Let the AI write the reminder",lead:"Waiting on someone? The Follow-up tab drafts the email for you.",
+ how:"Pick a style, such as Gentle reminder, Ask for a date or Offer help, add anything you want said, then press Draft follow-up email. The draft replies in the task's own thread, so the answer is tracked too. Nothing is sent until you have read it.",
+ action:"Click Forward.",callout:"Forward"},
+{img:"08",ch:2,title:"Hand a task to someone else",lead:"Forward passes the task to a colleague, with or without an email.",
+ how:"Choose who should do it, anyone else to involve, a deadline and a note. Without email, it simply becomes a task you asked of them. By email, the AI drafts a message that forwards the original, attachments included. Your own task can close as delegated at the same time.",
+ action:"Close this window, then open Follow-ups.",callout:"Close"},
+{img:"09",ch:2,title:"Drafts waiting for you",lead:"Follow-ups gathers every email the AI has drafted for you.",
+ how:"Each row shows the subject, the task it belongs to, who it goes to, and its state. Ready to review means the AI has checked the draft once more against the task and the emails.",
+ action:"Open the draft to Omar.",callout:"Open the draft"},
+{img:"10",ch:2,title:"Review, then send",lead:"You read every draft before it goes anywhere.",
+ how:"Edit the text directly, or tell the AI what to change, for example shorter or warmer, and press Rewrite. When it reads well, press Send and confirm, or save it to your Outlook drafts. Mandata never sends an email on its own.",
+ action:"Close the draft.",callout:"Close"},
+
+{img:"11",ch:3,title:"When the AI is not sure",lead:"Some emails may or may not ask you to do something. Mandata keeps them, marked Not sure, rather than miss a task.",
+ how:"Here, Omar shared a travel plan with several people, perhaps only for information. Answer with one click: Yes, it is a task, or Not a task. Either way, your answer teaches the AI for next time.",
+ action:"Click Yes, it is a task.",callout:"Yes, it is a task"},
+{img:"12",ch:3,title:"Mandata learns from you",lead:"Every correction you make becomes a lesson. You find them in Settings, under Lessons.",
+ how:"When you change a deadline, fix who asked whom, or mark something as not a task, the AI turns it into one general rule and follows it in every other thread. You can edit a lesson, retire it, delete it, or write your own.",
+ action:"Close Settings.",callout:"Close"},
+
+{img:"13",ch:4,title:"Every conversation, read whole",lead:"Threads lists the email conversations Mandata has read.",
+ how:"Pick one to see what it is about, who took part, and how each task branched off the email that opened it. The full conversation follows below. Read again asks the AI to read the thread from the start.",
+ action:"Click People.",callout:"People"},
+{img:"14",ch:4,title:"The people you work with",lead:"Everyone in your task email gets a card of their own.",
+ how:"Mandata reads job titles and organisations from email signatures, and writes a short profile of each person. The figures show how many tasks they have to do, how many they asked for, and how many are late.",
+ action:"Open Priya Raman.",callout:"Open the profile"},
+{img:"15",ch:4,title:"A profile for each person",lead:"The profile gathers everything between you and one person.",
+ how:"You see what they usually ask for, the tasks asked of them and by them, who they work with, and every email you share. Anything you edit here is kept, and the AI never overwrites it.",
+ action:"Click Ask Mandata.",callout:"Ask Mandata"},
+
+{img:"16",ch:5,title:"Ask in your own words",lead:"Ask Mandata is a chat with the AI about your own tasks, threads, people and email.",
+ how:"Type a question or pick a suggestion, such as what is overdue and what to do first. The AI answers only from what Mandata holds on this computer, and shows the records it used. Earlier conversations stay on the left.",
+ action:"Open the conversation: What should I do first today?",callout:"Open"},
+{img:"17",ch:5,title:"Answers with their sources",lead:"The answer puts your day in order, and cites every task it mentions.",
+ how:"Each numbered source is a link: click one to open that task. On the right, every record the conversation used is gathered in one list. Ask a follow-up question, and Mandata remembers the conversation.",
+ action:"Click Insights.",callout:"Insights"},
+
+{img:"18",ch:6,title:"See the patterns",lead:"Insights crosses any two things about your tasks.",
+ how:"Here, the flow shows who asks whom: the people asking on the left, the people doing the work on the right. Quick views answer common questions in one click, and you can switch to a table, bars or lines. Click any part to see the tasks behind it.",
+ action:"Click Reports.",callout:"Reports"},
+{img:"19",ch:6,title:"Your week in a report",lead:"Reports tells the story of each week: what came in, what you delivered, and who you worked with.",
+ how:"The table counts emails, tasks found and closed, and new tasks by kind. Generate asks the AI to write a short summary of the week, and Export PDF saves it as a document to share.",
+ action:"Click the Activity button.",callout:"Activity"},
+{img:"20",ch:6,title:"What Mandata has been doing",lead:"Activity is the app's own log.",
+ how:"It lists each mail check, each thread the AI read, each lesson learned and each setting changed, day by day. If a long thread ever gets stuck, it is listed at the top, with a button to try again.",
+ action:"Click AI ready.",callout:"AI ready"},
+{img:"21",ch:6,title:"The AI on your computer",lead:"AI management shows the AI server, your computer's memory and graphics card, and the model that reads your mail.",
+ how:"Mandata ranks the models that suit this computer and recommends the best one. Install another with one click, test its speed, or pause the AI. Everything runs locally, so a faster computer simply reads faster.",
+ action:"Close this window, then open Settings.",callout:"Close"},
+
+{img:"22",ch:7,title:"Tell Mandata who you are",lead:"Settings opens on You: your name and your email addresses.",
+ how:"This is how Mandata tells your email from everyone else's, and so which tasks are asked of you and which you asked of others. The tabs along the top cover mail, tasks, your writing voice, profiles, prompts and lessons.",
+ action:"Click Mail.",callout:"Mail"},
+{img:"23",ch:7,title:"Choose your mailbox",lead:"Mail sets which mailbox Mandata reads, and how often.",
+ how:"On Windows, it reads classic Outlook directly. On a Mac, on Linux, or with the new Outlook, you sign in to Microsoft 365 once, on Microsoft's own page, and Mandata never sees your password. It checks for new mail every minute.",
+ action:"Click Updates.",callout:"Updates"},
+{img:"24",ch:7,title:"Always up to date",lead:"Updates keeps Mandata current.",
+ how:"It looks for a new version every three hours. Choose whether it asks you first, or installs by itself the next time you close the window. Every download is checked against its published checksum, and your data is never touched.",
+ action:"Click Data.",callout:"Data"},
+{img:"25",ch:7,title:"Your data, backed up",lead:"Data shows where your tasks are kept, and backs them up.",
+ how:"Everything is in one database on this computer. Back up now makes a copy. Export saves a backup file anywhere you like, such as OneDrive or a USB stick, and Import brings one back, on this computer or a new one.",
+ action:"Click Phone.",callout:"Phone"},
+
+{img:"26",ch:8,title:"Pair your phone",lead:"Switch on Let my phone use Mandata over the Wi-Fi, and a QR code appears.",
+ how:"Scan it with your phone's camera. On Android, it opens the Mandata app, or offers to install it. On an iPhone, it opens in Safari, where Add to Home Screen makes it an app. Your mail stays on the computer: the phone talks to it over your Wi-Fi.",
+ action:"Scan the code with your phone.",callout:"Scan me"},
+{img:"27",ch:8,phone:true,title:"Mandata in your pocket",lead:"The phone opens on Home: what is overdue, what is due soon, and what is new.",
+ how:"Pinned tasks stay at the top. Tap any task to open it, and pull down to check for news.",
+ action:"Tap Tasks.",callout:"Tasks"},
+{img:"28",ch:8,phone:true,title:"Your tasks on the go",lead:"Tasks lists everything, with the same kinds as on the computer.",
+ how:"Switch between open, pinned and closed, filter by kind, or search. Each card shows who asked and the deadline. Swipe a card right when it is done, or left to park it.",
+ action:"Open the task due today.",callout:"Open"},
+{img:"29",ch:8,phone:true,title:"Act on a task",lead:"The task opens with who asked, the deadline in the email's own words, and its history.",
+ how:"Mark it done, or tap Follow up, and the AI on your computer drafts a reminder for you to read and send. Changes you make away from the Wi-Fi are kept on the phone, and sent as soon as it reaches the computer again.",
+ action:"Tap Ask.",callout:"Ask"},
+{img:"30",ch:8,phone:true,title:"Ask from anywhere",lead:"Ask Mandata works on the phone too.",
+ how:"Pick a question or type your own. The AI on your computer answers and cites its sources, just as it does on the desktop.",
+ action:"Back on the computer, switch to dark mode.",callout:""},
+
+{img:"31",ch:9,title:"Light or dark",lead:"The moon button at the top right switches Mandata to a dark theme.",
+ how:"Your choice is remembered, along with your filters and layout, so Mandata opens the way you left it.",
+ action:"Click the Mandata logo.",callout:"About"},
+{img:"32",ch:9,title:"That is Mandata",lead:"Mandata is Latin for things entrusted: the work each email hands to someone.",
+ how:"That completes the tour. Mandata finds each of those tasks in your Outlook threads, follows it to the email that closes it, and keeps your email on your own computer. Download it, and try it on your own mail.",
+ action:"Download Mandata from the top bar.",callout:""}
+];
+
+const $=s=>document.querySelector(s);
+const screen=$("#screen"), hot=$("#hot"), cursor=$("#cursor"), callout=$("#callout"), vp=$("#viewport");
+let i=0, playing=false, voiceOn=true, timer=null, busy=false;
+/* The label and pointer name the control the NEXT click lands on. They wait until the current step has been explained
+   (the narration has finished, or a short reading pause when the tour is not playing), so they never talk over it. */
+let revealed=false, revealTimer=null;
+const MANUAL_DWELL=2400;
+
+/* Screens load as the tour reaches them: the current one and the next two, so each is ready when it is needed. */
+const imgs={};
+function ensure(k){
+  if(k<0||k>=S.length) return;
+  const s=S[k]; if(imgs[s.img]) return;
+  const im=new Image(); im.decoding="async"; im.alt=s.title+" screen"; im.src=IMG[s.img];
+  imgs[s.img]=im; screen.appendChild(im);
+}
+
+const chapEl=$("#chapters");
+CHAPTERS.forEach((c,k)=>{
+  const b=document.createElement("button"); b.className="chap";
+  b.innerHTML='<div class="track"><i></i></div><div class="nm"><small>'+String(k+1).padStart(2,"0")+'</small>'+c+'</div>';
+  b.onclick=()=>{stop();go(S.findIndex(s=>s.ch===k))};
+  chapEl.appendChild(b);
+});
+
+function boxOf(s){ const b=BOXES[s.img]; return b?{b,W:s.phone?390:1440,H:s.phone?844:900}:null; }
+function place(s){
+  const bx=boxOf(s); if(!bx) return null;
+  const vr=vp.getBoundingClientRect(), sr=screen.getBoundingClientRect();
+  const sx=sr.width/bx.W, sy=sr.height/bx.H, ox=sr.left-vr.left, oy=sr.top-vr.top;
+  const [x,y,w,h]=bx.b;
+  return {left:ox+x*sx, top:oy+y*sy, width:Math.max(w*sx,14), height:Math.max(h*sy,14)};
+}
+function layout(){
+  const s=S[i], p=place(s);
+  if(!p){hot.hidden=true; callout.style.opacity=0; return null}
+  hot.hidden=false;
+  Object.assign(hot.style,{left:p.left+"px",top:p.top+"px",width:p.width+"px",height:p.height+"px"});
+  hot.setAttribute("aria-label",s.action);
+  if(s.callout){
+    callout.textContent=s.callout; callout.style.opacity=revealed?1:0;
+    const vr=vp.getBoundingClientRect();
+    let cy=p.top-34; if(cy<6) cy=p.top+p.height+10;
+    callout.style.left="0px"; callout.style.top="0px";
+    const cw=callout.offsetWidth;
+    const cx=Math.min(Math.max(6,p.left+p.width/2-cw/2),vr.width-cw-6);
+    callout.style.left=cx+"px"; callout.style.top=cy+"px";
+  } else callout.style.opacity=0;
+  return p;
+}
+function moveCursor(p){
+  if(!p||!revealed){cursor.style.opacity=0;return}
+  cursor.style.opacity=1;
+  cursor.style.left=(p.left+p.width/2)+"px";
+  cursor.style.top=(p.top+p.height/2)+"px";
+}
+function revealTarget(){ if(revealed) return; clearTimeout(revealTimer); revealed=true; moveCursor(layout()); }
+function scheduleReveal(ms){ clearTimeout(revealTimer); revealTimer=setTimeout(revealTarget,Math.max(0,ms)); }
+const narration=s=>s.title+". "+s.lead+" "+s.how;
+
+function go(k){
+  i=Math.max(0,Math.min(S.length-1,k));
+  const s=S[i];
+  vp.classList.toggle("phone",!!s.phone);
+  $("#wtitle").textContent=s.phone?"Mandata on a phone":"Mandata";
+  ensure(i); ensure(i+1); ensure(i+2);
+  Object.values(imgs).forEach(im=>im.classList.remove("on"));
+  imgs[s.img].classList.add("on");
+  revealed=false; callout.style.opacity=0; cursor.style.opacity=0;
+  requestAnimationFrame(()=>moveCursor(layout()));
+  scheduleReveal(MANUAL_DWELL);
+
+  $("#kChap").textContent=CHAPTERS[s.ch];
+  $("#kStep").textContent="Step "+(i+1)+" of "+S.length;
+  $("#title").textContent=s.title;
+  $("#lead").textContent=s.lead;
+  $("#how").textContent=s.how;
+  $("#actionText").textContent=s.action;
+  $("#pbody").scrollTop=0;
+  $("#prev").disabled=i===0;
+  $("#next").textContent=i===S.length-1?"Start again":"Next";
+
+  chapEl.querySelectorAll(".chap").forEach((b,k)=>{
+    const steps=S.map((x,j)=>[x,j]).filter(([x])=>x.ch===k);
+    const done=steps.filter(([,j])=>j<=i).length;
+    b.querySelector("i").style.width=(done/steps.length*100)+"%";
+    b.setAttribute("aria-current",String(k===s.ch));
+    if(k===s.ch){ const l=b.offsetLeft-chapEl.offsetLeft; if(l<chapEl.scrollLeft||l+b.offsetWidth>chapEl.scrollLeft+chapEl.clientWidth) chapEl.scrollLeft=l-8; }
+  });
+  buildStrip(s.ch);
+  updateFS(s);
+  speak(narration(s));
+}
+let stripCh=-1;
+function buildStrip(ch){
+  const strip=$("#strip");
+  if(stripCh!==ch){
+    stripCh=ch; strip.innerHTML="";
+    S.forEach((s,j)=>{ if(s.ch!==ch) return;
+      const b=document.createElement("button"); b.className="thumb"; b.dataset.j=j;
+      b.innerHTML='<img alt="" loading="lazy" src="'+THUMB[s.img]+'"><span>'+(j+1)+'</span>';
+      b.title=s.title; b.onclick=()=>{stop();go(j)};
+      strip.appendChild(b);
+    });
+  }
+  strip.querySelectorAll(".thumb").forEach(b=>{
+    const j=+b.dataset.j;
+    if(j===i){b.setAttribute("aria-current","step");const l=b.offsetLeft-strip.offsetLeft;if(l<strip.scrollLeft||l+b.offsetWidth>strip.scrollLeft+strip.clientWidth)strip.scrollLeft=l-8}
+    else b.removeAttribute("aria-current");
+    b.classList.toggle("done",j<i);
+  });
+}
+
+/* The click is shown (a ripple on the spot), then the next screen comes in. */
+function clickAdvance(){
+  if(busy) return;
+  if(i===S.length-1){ go(0); return }
+  const p=place(S[i]);
+  busy=true;
+  if(p){
+    const r=document.createElement("div"); r.className="ripple";
+    r.style.left=(p.left+p.width/2)+"px"; r.style.top=(p.top+p.height/2)+"px";
+    vp.appendChild(r); setTimeout(()=>r.remove(),600);
+  }
+  setTimeout(()=>{busy=false; go(i+1)},p?380:0);
+}
+hot.onclick=()=>{stop();clickAdvance()};
+hot.addEventListener("mouseenter",revealTarget);
+hot.addEventListener("focus",revealTarget);
+$("#next").onclick=()=>{stop();clickAdvance()};
+$("#prev").onclick=()=>{stop();go(i-1)};
+document.addEventListener("keydown",e=>{
+  if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||$("#zoomDlg").open||$("#voiceDlg").open||e.ctrlKey||e.metaKey||e.altKey) return;
+  const k=e.key.toLowerCase();
+  if(e.key==="ArrowRight"){e.preventDefault();stop();clickAdvance()}
+  else if(e.key==="ArrowLeft"){e.preventDefault();stop();go(i-1)}
+  else if(k==="f"){e.preventDefault();toggleFS()}
+  else if(fsOn&&(e.key===" "||k==="k")){e.preventDefault();playing?stop():startPlay()}
+  else if(fsOn&&k==="c"){e.preventDefault();toggleCap()}
+  else if(fsOn&&k==="m"){e.preventDefault();$("#voiceBtn").click()}
+  else if(e.key==="Escape"&&fsOn&&!fsNative()){e.preventDefault();exitFS()}
+  poke();
+});
+window.addEventListener("resize",()=>moveCursor(layout()));
+
+/* Full screen, as in a video player. The browser's own full screen where it has one (desktop, Android); elsewhere
+   (an iPhone) the player simply covers the page. Controls and the pointer hide while it plays and the mouse rests. */
+const stage=$("#stage"), fsCap=$("#fsCap");
+let fsOn=false, capOn=true, idleT=null;
+const fsNative=()=>(document.fullscreenElement||document.webkitFullscreenElement)===stage;
+function setCap(t){ fsCap.textContent=t||""; }
+function setFS(on){
+  fsOn=on; stage.classList.toggle("isfs",on); document.documentElement.style.overflow=on?"hidden":"";
+  poke(); requestAnimationFrame(()=>moveCursor(layout()));
+}
+function enterFS(){
+  const req=stage.requestFullscreen||stage.webkitRequestFullscreen;
+  setFS(true);
+  if(req){ try{ const p=req.call(stage,{navigationUI:"hide"}); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+}
+function exitFS(){
+  if(fsNative()) (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+  setFS(false);
+}
+function toggleFS(){ fsOn?exitFS():enterFS(); }
+["fullscreenchange","webkitfullscreenchange"].forEach(ev=>document.addEventListener(ev,()=>{ if(!fsNative()&&fsOn&&(document.fullscreenElement||document.webkitFullscreenElement)==null) setFS(false); else if(fsNative()) setFS(true); }));
+function poke(){
+  stage.classList.remove("idle"); clearTimeout(idleT);
+  if(fsOn&&playing) idleT=setTimeout(()=>stage.classList.add("idle"),2600);
+}
+["mousemove","pointerdown","touchstart"].forEach(ev=>stage.addEventListener(ev,poke,{passive:true}));
+function toggleCap(){ capOn=!capOn; stage.classList.toggle("nocap",!capOn); $("#fsCC").setAttribute("aria-pressed",String(capOn)); }
+const fsProg=$("#fsProg");
+S.forEach((s,j)=>{ const b=document.createElement("button"); b.title=(j+1)+". "+s.title; b.setAttribute("aria-label","Step "+(j+1)+": "+s.title); b.onclick=()=>{stop();go(j)}; fsProg.appendChild(b); });
+function updateFS(s){
+  $("#fsTitle").textContent="Mandata guided tour · "+CHAPTERS[s.ch];
+  $("#fsStep").textContent=(i+1)+" / "+S.length+" · "+s.title;
+  fsProg.querySelectorAll("button").forEach((b,j)=>{ b.classList.toggle("done",j<i); b.classList.toggle("cur",j===i); });
+  setCap(s.title+". "+s.lead);
+}
+$("#fsBtn").onclick=()=>{ enterFS(); if(!playing) startPlay(); };
+$("#fsTool").onclick=enterFS;
+$("#fsFab").onclick=e=>{ e.stopPropagation(); enterFS(); };
+$("#fsFab").addEventListener("dblclick",e=>e.stopPropagation());
+$("#fsExit").onclick=exitFS; $("#fsClose").onclick=exitFS;
+$("#fsPlay").onclick=()=>{ playing?stop():startPlay(); };
+$("#fsPrev").onclick=()=>{stop();go(i-1)};
+$("#fsNext").onclick=()=>{stop();clickAdvance()};
+$("#fsVoice").onclick=()=>$("#voiceBtn").click();
+$("#fsCC").onclick=toggleCap;
+vp.addEventListener("dblclick",e=>{ if(e.target!==hot) toggleFS(); });
+
+/* Narration: English voices from the browser, a woman and a man taking turns. */
+const synth=("speechSynthesis" in window)?window.speechSynthesis:null;
+let enVoices=[], VO={male:null,female:null}, userPick={male:null,female:null}, rate=1;
+try{ const v=JSON.parse(localStorage.getItem("mandataTourVoices")||"{}"); userPick.male=v.male||null; userPick.female=v.female||null; rate=+v.rate||1; }catch(e){}
+function keepVoices(){ try{ localStorage.setItem("mandataTourVoices",JSON.stringify({male:userPick.male,female:userPick.female,rate})) }catch(e){} }
+const MALE_RE=/(guy|andrew|brian|christopher|eric|roger|steffan|davis|jason|tony|\balex\b|daniel|fred|oliver|george|james|ryan|william|liam|arthur|thomas|aaron|\bmale\b)/i;
+const FEMALE_RE=/(aria|jenny|emma|michelle|\bana\b|\bava\b|nancy|sara|amber|ashley|cora|elizabeth|monica|samantha|karen|moira|tessa|victoria|susan|catherine|fiona|zira|hazel|linda|sonia|libby|female)/i;
+function quality(v){ const n=v.name; if(/natural|neural/i.test(n)) return 3; if(/online|premium|enhanced|siri|google/i.test(n)) return 2; return 1; }
+function score(v){
+  let s=quality(v)*100;
+  if(/^en[-_]US/i.test(v.lang)) s+=9; else if(/^en[-_]GB/i.test(v.lang)) s+=7; else if(/^en[-_](AU|CA|IE|NZ|ZA|IN)/i.test(v.lang)) s+=5;
+  if(!v.localService) s+=2;
+  return s;
+}
+function genderOf(v){ if(MALE_RE.test(v.name)&&!/female/i.test(v.name)) return "male"; if(FEMALE_RE.test(v.name)) return "female"; return null; }
+function loadVoices(){
+  if(!synth) return;
+  enVoices=synth.getVoices().filter(v=>/^en/i.test(v.lang)).sort((a,b)=>score(b)-score(a));
+  const byName=n=>enVoices.find(v=>v.name===n)||null;
+  VO.male=byName(userPick.male)||enVoices.find(v=>genderOf(v)==="male")||null;
+  VO.female=byName(userPick.female)||enVoices.find(v=>genderOf(v)==="female"&&v!==VO.male)||null;
+  const rest=enVoices.filter(v=>v!==VO.male&&v!==VO.female);
+  if(!VO.female) VO.female=rest.shift()||null;
+  if(!VO.male) VO.male=rest.shift()||null;
+  renderVoiceUI();
+}
+if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; setTimeout(loadVoices,700); setTimeout(loadVoices,2000); }
+
+function speakerFor(k){ return k%2===0?"female":"male"; }
+function voiceFor(g){ return VO[g]||VO[g==="male"?"female":"male"]||null; }
+/* Short pieces: some voices stop on long sentences. */
+function chunks(text){
+  const parts=text.replace(/\s+/g," ").split(/(?<=[.!?])\s+/), out=[];
+  parts.forEach(p=>{
+    if(p.length<=190){out.push(p);return}
+    let buf="";
+    p.split(/(?<=[,;:])\s+/).forEach(q=>{ if((buf+" "+q).length>190&&buf){out.push(buf);buf=q} else buf=buf?buf+" "+q:q; });
+    if(buf) out.push(buf);
+  });
+  return out.filter(Boolean);
+}
+let speakToken=0;
+function speak(text){
+  clearTimeout(timer);
+  if(synth) synth.cancel();
+  updateSpeakerBadge();
+  if(!playing) return;
+  const token=++speakToken;
+  const v=voiceFor(speakerFor(i));
+  if(voiceOn&&synth&&v){
+    const list=chunks(text); let n=0;
+    clearTimeout(revealTimer);
+    const next=()=>{
+      if(token!==speakToken||!playing) return;
+      if(n>=list.length){ revealTarget(); timer=setTimeout(autoStep,1300); return }
+      setCap(list[n]);
+      const u=new SpeechSynthesisUtterance(list[n++]);
+      u.voice=v; u.lang=v.lang||"en-US"; u.rate=rate*(quality(v)>=2?1.02:1); u.pitch=1;
+      u.onend=next; u.onerror=next;
+      synth.speak(u);
+    };
+    next();
+  } else {
+    const wait=Math.max(6500,text.length*55/rate);
+    scheduleReveal(wait-1500);
+    timer=setTimeout(autoStep,wait);
+  }
+}
+function updateSpeakerBadge(){
+  const g=speakerFor(i), v=voiceFor(g), el=$("#speaker");
+  el.textContent=(g==="male"?"Narrator: man":"Narrator: woman")+(v&&voiceOn?" · "+v.name.replace(/Microsoft |Online|\(Natural\)| - English.*$/g,"").trim():"");
+  el.dataset.g=g;
+}
+function autoStep(){ if(!playing) return; if(i===S.length-1){stop();return} clickAdvance(); }
+const playBtn=$("#playBtn");
+function setPlayUI(){
+  playBtn.setAttribute("aria-pressed",String(playing));
+  playBtn.querySelector("span").textContent=playing?"Pause tour":"Play narrated tour";
+  const d=playing?"M6 4h4v16H6zM14 4h4v16h-4z":"M7 4v16l13-8z";
+  $("#playIc").setAttribute("d",d); $("#fsPlayIc").setAttribute("d",d);
+  $("#fsPlay").title=playing?"Pause (Space)":"Play (Space)";
+  poke();
+}
+function stop(){ if(!playing) return; playing=false; speakToken++; clearTimeout(timer); if(synth) synth.cancel(); setPlayUI(); revealTarget(); setCap(S[i].title+". "+S[i].lead); }
+function startPlay(){
+  playing=true; setPlayUI();
+  go(i===S.length-1?0:i);
+  if(!fsOn) window.scrollTo({top:$(".chapters").getBoundingClientRect().top+window.scrollY-70,behavior:"smooth"});
+}
+playBtn.onclick=()=>{ if(playing) stop(); else startPlay(); };
+const voiceBtn=$("#voiceBtn");
+if(!synth){voiceOn=false; voiceBtn.disabled=true; voiceBtn.querySelector("span").textContent="No voice here"}
+voiceBtn.onclick=()=>{
+  voiceOn=!voiceOn;
+  voiceBtn.setAttribute("aria-pressed",String(voiceOn));
+  voiceBtn.querySelector("span").textContent=voiceOn?"Voice on":"Voice off";
+  $("#waveA").style.display=$("#waveB").style.display=voiceOn?"":"none";
+  $("#fsVoice").classList.toggle("muted",!voiceOn);
+  if(playing) speak(narration(S[i])); else updateSpeakerBadge();
+};
+
+const vdlg=$("#voiceDlg");
+$("#voiceSet").onclick=()=>{ loadVoices(); $("#vRate").value=rate; vdlg.showModal(); };
+$("#voiceClose").onclick=()=>vdlg.close();
+vdlg.addEventListener("click",e=>{if(e.target===vdlg)vdlg.close()});
+$("#vRate").addEventListener("input",e=>{ rate=+e.target.value||1; keepVoices(); });
+function qLabel(v){ const q=quality(v); return q===3?"natural":q===2?"good":"basic"; }
+function renderVoiceUI(){
+  ["male","female"].forEach(g=>{
+    const sel=$("#vs-"+g);
+    sel.innerHTML="";
+    if(!enVoices.length){ sel.innerHTML='<option>No English voices found</option>'; sel.disabled=true; return }
+    sel.disabled=false;
+    enVoices.forEach(v=>{
+      const o=document.createElement("option"); o.value=v.name;
+      o.textContent=v.name+"  ("+v.lang+", "+qLabel(v)+")";
+      if(VO[g]&&VO[g].name===v.name) o.selected=true;
+      sel.appendChild(o);
+    });
+    $("#vq-"+g).textContent=VO[g]?qLabel(VO[g]):"none";
+  });
+  const natural=enVoices.filter(v=>quality(v)===3), m=$("#vMsg");
+  if(!synth) m.textContent="This browser cannot read text aloud. The tour still plays, with a pause on each step.";
+  else if(!enVoices.length) m.textContent="No English voices were found in this browser. Open the tour in Microsoft Edge for natural English voices.";
+  else if(natural.length>=2) m.textContent="Found "+natural.length+" natural English voices. The tour picks the best woman's and man's voices for you.";
+  else m.textContent="The voices here are not the most natural ones. For the natural Aria and Guy voices, open the tour in Microsoft Edge.";
+  updateSpeakerBadge();
+}
+["male","female"].forEach(g=>{
+  $("#vs-"+g).addEventListener("change",e=>{ userPick[g]=e.target.value; keepVoices(); loadVoices(); });
+  $("#vt-"+g).addEventListener("click",()=>{
+    if(!synth) return; synth.cancel();
+    const v=VO[g]; if(!v) return;
+    const u=new SpeechSynthesisUtterance(g==="male"?"Hello, I am the man's voice on this tour.":"Hello, I am the woman's voice on this tour.");
+    u.voice=v; u.lang=v.lang; u.rate=rate; synth.speak(u);
+  });
+});
+
+const dlg=$("#zoomDlg");
+$("#zoomBtn").onclick=()=>{
+  const s=S[i]; $("#zoomImg").src=IMG[s.img]; $("#zoomImg").style.width=s.phone?"390px":"1440px";
+  $("#zoomTitle").textContent=s.title; dlg.showModal();
+};
+$("#zoomClose").onclick=()=>dlg.close();
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+
+/* A link can open the tour at a step: tour.html#step-12 */
+const m=/^#step-(\d+)$/.exec(location.hash);
+go(m?+m[1]-1:0);
+})();
+</script>
+</body>
+</html>
